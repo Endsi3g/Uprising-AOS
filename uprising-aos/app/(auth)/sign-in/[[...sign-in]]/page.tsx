@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Mail, Lock, Globe, Github } from 'lucide-react'
 
 export default function SignInPage() {
   const { signIn, errors, fetchStatus } = useSignIn()
@@ -73,31 +73,31 @@ export default function SignInPage() {
 
   if (signIn.status === 'needs_second_factor') {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Authentification requise</CardTitle>
-            <CardDescription>
-              Veuillez entrer le code de votre application d'authentification.
+      <div className="flex items-center justify-center min-h-screen bg-black p-4 font-sans text-foreground">
+        <Card className="w-full max-w-md border-border/20 bg-card/50 backdrop-blur-xl shadow-2xl">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold tracking-tight">Authentification</CardTitle>
+            <CardDescription className="text-muted-foreground/80">
+              Saisissez le code de votre application MFA.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form action={handleMFA} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="code">Code MFA</Label>
-                <Input id="code" name="code" type="text" placeholder="123456" required />
+                <Input id="code" name="code" type="text" placeholder="123456" className="bg-background/50 border-border/20 text-center text-2xl tracking-[0.5em] h-14 font-mono" required />
                 {errors?.fields?.code && (
-                  <p className="text-sm font-medium text-destructive">{errors.fields.code.message}</p>
+                  <p className="text-xs font-medium text-destructive">{errors.fields.code.message}</p>
                 )}
               </div>
               
               {errors?.global && errors.global.length > 0 && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="bg-destructive/10 border-destructive/20 text-destructive text-xs">
                   <AlertDescription>{errors.global[0].message}</AlertDescription>
                 </Alert>
               )}
 
-              <Button type="submit" className="w-full" disabled={fetchStatus === 'fetching'}>
+              <Button type="submit" className="w-full h-11 font-semibold" disabled={fetchStatus === 'fetching'}>
                 {fetchStatus === 'fetching' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                 Vérifier
               </Button>
@@ -109,71 +109,107 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted/40 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Connexion</CardTitle>
-          <CardDescription>
-            Accédez à Uprising AOS.
+    <div className="flex items-center justify-center min-h-screen bg-black p-4 font-sans text-foreground">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(24,24,27,1)_0%,rgba(0,0,0,1)_100%)] z-0" />
+      
+      <Card className="w-full max-w-md border-border/20 bg-card/50 backdrop-blur-2xl shadow-2xl relative z-10">
+        <CardHeader className="space-y-2 text-center pb-8">
+          <div className="mx-auto h-12 w-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-2 shadow-inner">
+             <div className="h-6 w-6 rounded-full bg-white animate-pulse" />
+          </div>
+          <CardTitle className="text-3xl font-bold tracking-tight">Connexion</CardTitle>
+          <CardDescription className="text-muted-foreground/80">
+            Accédez à votre espace Uprising Agency OS.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col space-y-4 mb-4">
-            <Button variant="outline" onClick={() => handleSSO('oauth_google')} disabled={fetchStatus === 'fetching'}>
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <Button 
+              variant="outline" 
+              className="border-border/20 bg-white/5 hover:bg-white/10 h-11 transition-all active:scale-95"
+              onClick={() => handleSSO('oauth_google')} 
+              disabled={fetchStatus === 'fetching'}
+            >
+              <Globe className="w-4 h-4 mr-2" />
               Google
             </Button>
-            <Button variant="outline" onClick={() => handleSSO('oauth_github')} disabled={fetchStatus === 'fetching'}>
+            <Button 
+              variant="outline" 
+              className="border-border/20 bg-white/5 hover:bg-white/10 h-11 transition-all active:scale-95"
+              onClick={() => handleSSO('oauth_github')} 
+              disabled={fetchStatus === 'fetching'}
+            >
+              <Github className="w-4 h-4 mr-2" />
               GitHub
             </Button>
           </div>
 
-          <div className="relative mb-4">
+          <div className="relative mb-8">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t border-border/10" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Ou avec l'email</span>
+            <div className="relative flex justify-center text-[10px] uppercase tracking-widest">
+              <span className="bg-[#0c0c0e] px-4 text-muted-foreground font-bold">ou continuer avec</span>
             </div>
           </div>
 
-          <form action={handleSubmit} className="space-y-4">
+          <form action={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="nom@exemple.com"
-                required
-              />
+              <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 ml-1">Identifiant</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="nom@studio.com"
+                  className="bg-background/40 border-border/20 pl-10 h-11 focus-visible:ring-primary/30"
+                  required
+                />
+              </div>
               {errors?.fields?.identifier && (
-                <p className="text-sm font-medium text-destructive">{errors.fields.identifier.message}</p>
+                <p className="text-[10px] font-bold text-destructive uppercase tracking-tight ml-1">{errors.fields.identifier.message}</p>
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Mot de passe</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-              />
+              <Label htmlFor="password" d="password-label" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 ml-1">Mot de passe</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className="bg-background/40 border-border/20 pl-10 h-11 focus-visible:ring-primary/30"
+                  required
+                />
+              </div>
               {errors?.fields?.password && (
-                <p className="text-sm font-medium text-destructive">{errors.fields.password.message}</p>
+                <p className="text-[10px] font-bold text-destructive uppercase tracking-tight ml-1">{errors.fields.password.message}</p>
               )}
             </div>
 
             {errors?.global && errors.global.length > 0 && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="bg-destructive/10 border-destructive/20 text-destructive text-xs py-2">
                 <AlertDescription>{errors.global[0].message}</AlertDescription>
               </Alert>
             )}
 
-            <Button type="submit" className="w-full" disabled={fetchStatus === 'fetching'}>
+            <Button type="submit" className="w-full h-11 font-bold shadow-lg shadow-primary/20 bg-white text-black hover:bg-white/90 active:scale-[0.98] transition-all" disabled={fetchStatus === 'fetching'}>
               {fetchStatus === 'fetching' ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
               Se connecter
             </Button>
           </form>
+
+          <div className="mt-8 text-center text-xs">
+            <span className="text-muted-foreground">Pas encore de compte ? </span>
+            <Button 
+              variant="link" 
+              className="p-0 h-auto font-bold text-primary hover:no-underline" 
+              onClick={() => router.push('/sign-up')}
+            >
+              S'inscrire
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
