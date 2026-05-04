@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { CheckinClient } from './checkin-client'
+import { CompensationCard } from '@/components/shared/compensation-card'
+import { Progress } from '@/components/ui/progress'
 import type { TeamMember } from '@/types'
 
 export default async function TeamMemberPage({ params }: { params: Promise<{ id: string }> }) {
@@ -25,11 +27,27 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
     notFound()
   }
 
+  // Fetch Stats and Compensation (using as any because of dynamic views)
+  const { data: statsData } = await (supabase as any)
+    .from('member_deliverables_stats')
+    .select('*')
+    .eq('member_name', member.name)
+    .single()
+
+  const { data: compData } = await (supabase as any)
+    .from('compensation_estimates')
+    .select('*')
+    .eq('member_id', id)
+    .single()
+
   const { data: checkins } = await supabase
     .from('team_checkins')
     .select('*')
     .eq('team_member_id', id)
     .order('created_at', { ascending: false })
+
+  const stats = statsData || { total_deliverables: 0, completed_deliverables: 0, avg_progress: 0 }
+  const compensation = compData || { total_monthly_revenue: 0, estimated_compensation: 0 }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -52,25 +70,40 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
               </Avatar>
               <div>
                 <h2 className="text-xl font-bold">{member.name}</h2>
-                <p className="text-muted-foreground text-sm">{member.role}</p>
+                <Badge variant="secondary" className="mt-1">{member.role}</Badge>
               </div>
               <div className="flex flex-wrap justify-center gap-1.5">
                 {(member.skills || []).map((skill: string) => (
-                  <Badge key={skill} variant="secondary" className="text-xs">{skill}</Badge>
+                  <Badge key={skill} variant="outline" className="text-[10px] uppercase tracking-wider">{skill}</Badge>
                 ))}
               </div>
             </CardContent>
           </Card>
 
+          {/* Real Compensation Tracker */}
+          <CompensationCard 
+            revenueShare={member.revenue_share}
+            totalMonthlyRevenue={compensation.total_monthly_revenue}
+            estimatedCompensation={compensation.estimated_compensation}
+          />
+
+          {/* Quick KPIs */}
           <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Compensation</CardTitle>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Productivité</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-sm">Revenue Share</span>
-                <span className="font-bold text-lg text-green-500">{member.revenue_share}%</span>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between text-xs">
+                <span className="text-muted-foreground">Livrables complétés</span>
+                <span className="font-bold">{stats.completed_deliverables} / {stats.total_deliverables}</span>
               </div>
+              <Progress value={stats.total_deliverables > 0 ? (stats.completed_deliverables / stats.total_deliverables) * 100 : 0} className="h-1.5" />
+              
+              <div className="flex justify-between text-xs pt-2">
+                <span className="text-muted-foreground">Progression moyenne</span>
+                <span className="font-bold">{stats.avg_progress}%</span>
+              </div>
+              <Progress value={stats.avg_progress} className="h-1.5" />
             </CardContent>
           </Card>
         </div>

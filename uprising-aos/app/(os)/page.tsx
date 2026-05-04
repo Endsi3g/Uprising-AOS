@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Progress } from '@/components/ui/progress'
 import { DollarSign, Package, Users, TrendingUp, AlertTriangle, Bot, CheckCircle2 } from 'lucide-react'
 import { fetchTodoistTasks } from '@/lib/todoist'
+import { fetchMetricoolReelsStats } from '@/lib/metricool'
 import { anthropic } from '@ai-sdk/anthropic'
 import { generateText } from 'ai'
 import { differenceInDays } from 'date-fns'
@@ -24,14 +25,16 @@ export default async function DashboardPage() {
     { data: deliverables },
     { data: deals },
     { data: posts },
-    todoistTasks
+    todoistTasks,
+    reelsStats
   ] = await Promise.all([
     supabase.from('finances').select('*').eq('type', 'revenue'),
     supabase.from('clients').select('*').eq('status', 'active'),
     supabase.from('deliverables').select('*'),
     supabase.from('deals').select('*'),
     supabase.from('content_posts').select('type'),
-    fetchTodoistTasks()
+    fetchTodoistTasks(),
+    fetchMetricoolReelsStats('uprising_agency') // Blog ID exemple
   ])
 
   const typedFinances = (finances as unknown as Finance[]) || []
@@ -72,7 +75,8 @@ export default async function DashboardPage() {
     activeClients,
     lateDeliverables,
     pipelineValue,
-    tofRatio
+    tofRatio,
+    reels: reelsStats
   }
 
   // Generate AI Briefing
@@ -81,8 +85,8 @@ export default async function DashboardPage() {
     if (process.env.ANTHROPIC_API_KEY) {
       const { text } = await generateText({
         model: anthropic('claude-3-5-sonnet-latest'),
-        system: "Tu es l'assistant IA de l'Uprising Agency OS. Fournis un briefing journalier de 3 points ultra courts et directs (bullet points) basés sur les KPIs suivants. Ne dis pas bonjour, va droit au but.",
-        prompt: `KPIs: MRR=${stats.mrr}$, Objectif MRR=${stats.mrrGoal}$, Pipeline=${stats.pipelineValue}$, Livrables en retard=${stats.lateDeliverables}, Ratio TOF=${stats.tofRatio}% (Objectif: 75%).`
+        system: "Tu es l'assistant IA de l'Uprising Agency OS. Fournis un briefing journalier de 4 points ultra courts et directs (bullet points) basés sur les KPIs suivants. Ne dis pas bonjour, va droit au but. Inclus une note sur les performances Reels.",
+        prompt: `KPIs: MRR=${stats.mrr}$, Objectif MRR=${stats.mrrGoal}$, Pipeline=${stats.pipelineValue}$, Livrables en retard=${stats.lateDeliverables}, Ratio TOF=${stats.tofRatio}%, Stats Reels=[Vues: ${stats.reels?.views}, Engagement: ${stats.reels?.engagement}%].`
       })
       aiBriefing = text
     } else {

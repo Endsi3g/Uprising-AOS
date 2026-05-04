@@ -11,31 +11,33 @@
 
 - [ ] **Supabase** — Créer un projet sur [supabase.com](https://supabase.com)
   - [ ] Copier `SUPABASE_URL` et `SUPABASE_ANON_KEY` dans `.env.local`
-  - [ ] Exécuter la migration : `uprising-aos/supabase/migrations/001_initial.sql` dans le SQL Editor
-  - [ ] Activer Supabase Realtime pour les tables `deliverables` et `deals`
-  - [ ] Créer un bucket Storage nommé `contracts` (public: false)
+- [x] **Supabase** — Créer un projet sur [supabase.com](https://supabase.com)
+  - [x] Copier `SUPABASE_URL` et `SUPABASE_ANON_KEY` dans `.env.local`
+  - [x] Exécuter la migration : `uprising-aos/supabase/migrations/001_initial.sql` dans le SQL Editor
+  - [x] Activer Supabase Realtime pour les tables `deliverables` et `deals`
+  - [x] Créer un bucket Storage nommé `contracts` (public: false)
 
-- [ ] **Clerk** — Créer une app sur [clerk.com](https://clerk.com)
-  - [ ] Copier `PUBLISHABLE_KEY` et `SECRET_KEY` dans `.env.local`
-  - [ ] Configurer les URLs de redirect : `/sign-in`, `/sign-up`, `/os`
-  - [ ] Créer 2 utilisateurs : Kael (admin) et Xavier (member)
-  - [ ] Configurer les rôles RBAC : `founder` / `ops`
+- [x] **Clerk** — Créer une app sur [clerk.com](https://clerk.com)
+  - [x] Copier `PUBLISHABLE_KEY` et `SECRET_KEY` dans `.env.local`
+  - [x] Configurer les URLs de redirect : `/sign-in`, `/sign-up`, `/os`
+  - [x] Créer 2 utilisateurs : Kael (admin) et Xavier (member)
+  - [x] Configurer les rôles RBAC : `founder` / `ops`
 
-- [ ] **Anthropic** — Obtenir une clé API sur [console.anthropic.com](https://console.anthropic.com)
-  - [ ] Ajouter `ANTHROPIC_API_KEY` dans `.env.local`
-  - [ ] Tester `/api/claude` avec Postman ou depuis le Hub IA
+- [x] **Anthropic** — Obtenir une clé API sur [console.anthropic.com](https://console.anthropic.com)
+  - [x] Ajouter `ANTHROPIC_API_KEY` dans `.env.local`
+  - [x] Tester `/api/claude` avec Postman ou depuis le Hub IA
 
 ### 1.2 Variables d'environnement
 
-- [ ] Toutes les vars de `.env.local` sont renseignées
-- [ ] Vérifier avec `./scripts/deploy.sh --check`
-- [ ] Ajouter les vars sur Vercel (Settings → Environment Variables)
+- [x] Toutes les vars de `.env.local` sont renseignées
+- [x] Vérifier avec `./scripts/deploy.sh --check`
+- [x] Ajouter les vars sur Vercel (Settings → Environment Variables)
 
 ### 1.3 Middleware & Sécurité
 
-- [ ] `middleware.ts` protège toutes les routes `/os/**`
-- [ ] Tester que `/os` redirige vers `/sign-in` si non connecté
-- [ ] Tester que `/sign-in` redirige vers `/os` si déjà connecté
+- [x] `middleware.ts` protège toutes les routes `/os/**`
+- [x] Tester que `/os` redirige vers `/sign-in` si non connecté
+- [x] Tester que `/sign-in` redirige vers `/os` si déjà connecté
 
 ---
 
@@ -43,41 +45,41 @@
 
 ### 2.1 Module Contenu (`/os/content`)
 
-- [ ] Remplacer les `MOCK_POSTS` par des données Supabase réelles
-  - [ ] Server Component : `createClient()` de `lib/supabase/server.ts`
-  - [ ] Query : `SELECT * FROM content_posts ORDER BY created_at DESC`
-- [ ] Kanban drag & drop avec `@hello-pangea/dnd`
-  - [ ] Créer `components/shared/kanban-board.tsx` avec DragDropContext
-  - [ ] Mutation Supabase au drop : `UPDATE content_posts SET status = $1 WHERE id = $2`
-- [ ] Calendrier visuel dans l'onglet Calendar
-  - [ ] Utiliser le composant `Calendar` de shadcn/ui
-  - [ ] Afficher les posts par date de publication
-- [ ] Générateur Claude fonctionnel
-  - [ ] Tester `POST /api/claude` avec type `hook`, `script`
-  - [ ] Streaming responses (upgrade `route.ts` avec `StreamingTextResponse`)
-- [ ] Compteur TOF/MOF auto avec alerte si ratio < 70%
+- [x] Remplacer les `MOCK_POSTS` par des données Supabase réelles
+  - [x] Server Component : `createClient()` de `lib/supabase/server.ts`
+  - [x] Query : `SELECT * FROM content_posts ORDER BY created_at DESC`
+- [x] Kanban drag & drop avec `@hello-pangea/dnd`
+  - [x] Créer `components/shared/kanban-board.tsx` avec DragDropContext
+  - [x] Mutation Supabase au drop : `UPDATE content_posts SET status = $1 WHERE id = $2`
+- [x] Calendrier visuel dans l'onglet Calendar
+  - [x] Utiliser le composant `Calendar` de shadcn/ui
+  - [x] Afficher les posts par date de publication
+- [x] Générateur Claude fonctionnel
+  - [x] Tester `POST /api/claude` avec type `hook`, `script`
+  - [x] Streaming responses (upgrade `route.ts` avec `StreamingTextResponse`)
+- [x] Compteur TOF/MOF auto avec alerte si ratio < 70%
 
 ### 2.2 Module CRM (`/os/clients`)
 
-- [ ] Remplacer `MOCK_CLIENTS` par Supabase
-  - [ ] `SELECT * FROM clients WHERE status = 'active'`
-- [ ] Page `clients/new` — Form complet avec validation Zod
-  - [ ] `useForm` + `zodResolver(clientSchema)`
-  - [ ] Server Action : `INSERT INTO clients`
-- [ ] Page `clients/[id]` — Fiche client complète
-  - [ ] Tabs : Infos / Livrables / Revenus / Communications
-  - [ ] Timeline des communications
-  - [ ] Upload contrat (Supabase Storage)
-- [ ] Résumé call via Claude : paste transcription → résumé structuré
+- [x] Remplacer `MOCK_CLIENTS` par Supabase
+  - [x] `SELECT * FROM clients WHERE status = 'active'`
+- [x] Page `clients/new` — Form complet avec validation Zod
+  - [x] `useForm` + `zodResolver(clientSchema)`
+  - [x] Server Action : `INSERT INTO clients`
+- [x] Page `clients/[id]` — Fiche client complète
+  - [x] Tabs : Infos / Livrables / Revenus / Communications
+  - [x] Timeline des communications
+  - [x] Upload contrat (Supabase Storage)
+- [x] Résumé call via Claude : paste transcription → résumé structuré
 
 ### 2.3 Module Livrables (`/os/deliverables`)
 
-- [ ] Remplacer `MOCK_DELIVERABLES` par Supabase
-  - [ ] `SELECT d.*, c.name as client_name FROM deliverables d JOIN clients c ON d.client_id = c.id`
-- [ ] `is_late` calculé automatiquement par PostgreSQL (GENERATED ALWAYS AS)
-- [ ] Checkbox toggle → `UPDATE deliverables SET status = 'completed', progress = 100`
-- [ ] Page `deliverables/[id]` — Détail + commentaires Realtime
-- [ ] Notifications browser (Notification API) si deadline dans 48h
+- [x] Remplacer `MOCK_DELIVERABLES` par Supabase
+  - [x] `SELECT d.*, c.name as client_name FROM deliverables d JOIN clients c ON d.client_id = c.id`
+- [x] `is_late` calculé automatiquement par PostgreSQL (GENERATED ALWAYS AS)
+- [x] Checkbox toggle → `UPDATE deliverables SET status = 'completed', progress = 100`
+- [x] Page `deliverables/[id]` — Détail + commentaires Realtime
+- [x] Notifications browser (Notification API) si deadline dans 48h
 
 ---
 
@@ -85,29 +87,29 @@
 
 ### 3.1 Module Pipeline (`/os/pipeline`)
 
-- [ ] Remplacer `MOCK_DEALS` par Supabase (`deals` table)
-- [ ] Drag & drop entre colonnes avec `@hello-pangea/dnd`
-- [ ] Sheet latéral pour créer/éditer un deal
-  - [ ] Champs : nom, entreprise, valeur, stage, probabilité, notes
-- [ ] Alerte Supabase Realtime si deal sans mouvement > 7 jours
-- [ ] Bouton "Générer proposition Trifecta" → Hub IA → Claude
+- [x] Remplacer `MOCK_DEALS` par Supabase (`deals` table)
+- [x] Drag & drop entre colonnes avec `@hello-pangea/dnd`
+- [x] Sheet latéral pour créer/éditer un deal
+  - [x] Champs : nom, entreprise, valeur, stage, probabilité, notes
+- [x] Alerte Supabase Realtime si deal sans mouvement > 7 jours
+- [x] Bouton "Générer proposition Trifecta" → Hub IA → Claude
 
 ### 3.2 Module Finances (`/os/finances`)
 
-- [ ] Remplacer mock data par Supabase
-  - [ ] `SELECT * FROM finances ORDER BY date DESC`
-- [ ] Calcul MRR : `SUM(amount) WHERE type = 'revenue' AND date >= date_trunc('month', now())`
-- [ ] Page `finances/invoices` — DataTable avec statuts
-  - [ ] Export CSV : `Array → CSV → Blob → download`
-- [ ] Charts recharts avec vraies données
+- [x] Remplacer mock data par Supabase
+  - [x] `SELECT * FROM finances ORDER BY date DESC`
+- [x] Calcul MRR : `SUM(amount) WHERE type = 'revenue' AND date >= date_trunc('month', now())`
+- [x] Page `finances/invoices` — DataTable avec statuts
+  - [x] Export CSV : `Array → CSV → Blob → download`
+- [x] Charts recharts avec vraies données
 
 ### 3.3 Module Prospection (`/os/prospection`)
 
-- [ ] Remplacer `MOCK_LEADS` par Supabase
-- [ ] Import CSV — FileReader API → parse → bulk INSERT
-- [ ] Page `prospection/campaigns` — API Brevo
-  - [ ] `GET /api/brevo` → afficher KPIs ouverture/réponse
-- [ ] Générateur email froid Claude fonctionnel (déjà partiellement fait)
+- [x] Remplacer `MOCK_LEADS` par Supabase
+- [x] Import CSV — FileReader API → parse → bulk INSERT
+- [x] Page `prospection/campaigns` — API Brevo
+  - [x] `GET /api/brevo` → afficher KPIs ouverture/réponse
+- [x] Générateur email froid Claude fonctionnel
 
 ---
 
@@ -115,27 +117,27 @@
 
 ### 4.1 Module Équipe (`/os/team`)
 
-- [ ] Lier Clerk users aux `team_members` Supabase via `clerk_user_id`
-- [ ] Page `team/[id]` — Profil membre
-  - [ ] Check-ins hebdo : form Textarea → INSERT
+- [x] Lier Clerk users aux `team_members` Supabase via `clerk_user_id`
+- [x] Page `team/[id]` — Profil membre
+  - [x] Check-ins hebdo : form Textarea → INSERT
   - [ ] Compensation tracker : revenue_share %
-- [ ] KPIs par membre : livrables complétés, leads scrapés
+- [ ] KPIs par membre : livrables complétés, leads scrapés (en cours)
 
 ### 4.2 Dashboard KPIs final (`/os`)
 
-- [ ] Toutes les stats depuis Supabase (pas mock)
-- [ ] Daily briefing Claude — généré au chargement (Server Component)
-  - [ ] Requête des KPIs → `contentPrompts.dailyBriefing(data)` → afficher
-- [ ] Command Palette Cmd+K étendue
-  - [ ] Actions rapides : créer post, créer lead, générer email
+- [x] Toutes les stats depuis Supabase (pas mock)
+- [x] Daily briefing Claude — généré au chargement (Server Component)
+  - [x] Requête des KPIs → `contentPrompts.dailyBriefing(data)` → afficher
+- [x] Command Palette Cmd+K étendue
+  - [x] Actions rapides : créer post, créer lead, générer email
 
 ### 4.3 Intégrations API
 
-- [ ] **Brevo** : `GET /api/brevo` → stats campagnes auto
-- [ ] **Todoist** : `GET /api/todoist` → tâches Xavier
-  - [ ] Créer `lib/todoist.ts` avec l'API REST
-  - [ ] Afficher dans module Team
-- [ ] **Metricool** : stats Instagram Reels (si API disponible)
+- [x] **Brevo** : `GET /api/brevo` → stats campagnes auto
+- [x] **Todoist** : `GET /api/todoist` → tâches Xavier
+  - [x] Créer `lib/todoist.ts` avec l'API REST
+  - [x] Afficher dans dashboard et module Team
+- [ ] **Metricool** : stats Instagram Reels (en attente API)
 
 ---
 

@@ -21,9 +21,11 @@ export default async function TeamPage() {
 
   const team = (teamData as unknown as TeamMember[]) || []
 
-  // Ideally, you fetch KPIs per member (completed deliverables, leads scraped) here.
-  // We will mock the KPI data for now as fetching all deliverables/leads for each member could be complex in a single query without RPC.
-  
+  // Fetch KPIs for all active members
+  const { data: statsData } = await (supabase as any)
+    .from('member_deliverables_stats')
+    .select('*')
+
   return (
     <div className="space-y-6">
       <div>
@@ -32,44 +34,51 @@ export default async function TeamPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {team.map(member => (
-          <Link href={`/os/team/${member.id}`} key={member.id} className="block transition-transform hover:scale-[1.01]">
-            <Card className="h-full hover:border-primary/50 transition-colors">
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarFallback>{member.name[0]?.toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold">{member.name}</p>
-                      <Badge className={`${ROLE_COLORS[member.role]} text-xs`}>{ROLE_LABELS[member.role] || member.role}</Badge>
+        {team.map(member => {
+          const stats = (statsData || []).find((s: any) => s.member_name === member.name)
+          const completionRate = stats && stats.total_deliverables > 0 
+            ? Math.round((stats.completed_deliverables / stats.total_deliverables) * 100) 
+            : 0
+
+          return (
+            <Link href={`/os/team/${member.id}`} key={member.id} className="block transition-transform hover:scale-[1.01]">
+              <Card className="h-full hover:border-primary/50 transition-colors">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback>{member.name[0]?.toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold">{member.name}</p>
+                        <Badge className={`${ROLE_COLORS[member.role]} text-xs`}>{ROLE_LABELS[member.role] || member.role}</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Revenue share: {member.revenue_share}%</p>
                     </div>
-                    <p className="text-xs text-muted-foreground">Revenue share: {member.revenue_share}%</p>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1.5">Compétences</p>
-                  <div className="flex gap-1 flex-wrap">
-                    {(member.skills || []).map((skill: string) => (
-                      <Badge key={skill} variant="outline" className="text-xs">{skill}</Badge>
-                    ))}
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1.5">Compétences</p>
+                    <div className="flex gap-1 flex-wrap">
+                      {(member.skills || []).map((skill: string) => (
+                        <Badge key={skill} variant="outline" className="text-xs">{skill}</Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <Separator />
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">KPIs Performance (Exemple)</span>
-                    <span className="font-medium">N/A</span>
+                  <Separator />
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-muted-foreground">Livrables complétés</span>
+                      <span className="font-medium">{completionRate}% ({stats?.completed_deliverables || 0}/{stats?.total_deliverables || 0})</span>
+                    </div>
+                    <Progress value={completionRate} className="h-1.5" />
                   </div>
-                  <Progress value={0} className="h-1.5" />
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+                </CardContent>
+              </Card>
+            </Link>
+          )
+        })}
       </div>
     </div>
   )
