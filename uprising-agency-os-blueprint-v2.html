@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uprising Agency OS — Blueprint v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090b;
+  --s1: #111113;
+  --s2: #18181b;
+  --s3: #1f1f23;
+  --b1: #27272a;
+  --b2: #3f3f46;
+  --blue: #3b82f6;
+  --cyan: #06b6d4;
+  --green: #22c55e;
+  --yellow: #eab308;
+  --red: #ef4444;
+  --purple: #a855f7;
+  --orange: #f97316;
+  --pink: #ec4899;
+  --t1: #fafafa;
+  --t2: #a1a1aa;
+  --t3: #71717a;
+  --t4: #52525b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--t1); font-family: 'DM Mono', monospace; overflow-x: hidden; }
+
+/* NOISE */
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.5;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 56px 28px 100px; }
+
+/* HEADER */
+.hdr { margin-bottom: 60px; }
+.hdr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; flex-wrap: wrap; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-hex { width: 32px; height: 32px; background: var(--blue); clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
+.brand-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; }
+.brand-name span { color: var(--blue); }
+.version-pill { font-size: 10px; padding: 3px 10px; border: 1px solid var(--b2); color: var(--t3); letter-spacing: 0.15em; text-transform: uppercase; border-radius: 2px; }
+
+.hdr-hero { border-top: 1px solid var(--b1); padding-top: 40px; }
+.eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--blue); }
+
+h1 { font-family: 'Syne', sans-serif; font-size: clamp(40px, 7vw, 80px); font-weight: 800; line-height: 0.92; letter-spacing: -0.04em; margin-bottom: 20px; }
+h1 .l2 { color: var(--blue); }
+h1 .l3 { color: var(--t4); }
+
+.hdr-desc { font-size: 12px; color: var(--t2); line-height: 1.85; max-width: 580px; margin-bottom: 28px; }
+
+.stat-row { display: flex; flex-wrap: wrap; }
+.stat { padding: 12px 22px; border: 1px solid var(--b1); border-right: none; background: var(--s1); }
+.stat:last-child { border-right: 1px solid var(--b1); }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; line-height: 1; }
+.stat-lab { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--t4); margin-top: 2px; }
+
+/* SECTION */
+.sec { margin-bottom: 72px; }
+.sec-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.sec-n { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 800; color: var(--blue); letter-spacing: 0.15em; min-width: 28px; }
+.sec-t { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.03em; }
+.sec-l { flex: 1; height: 1px; background: var(--b1); }
+
+/* NOTICE */
+.note { padding: 13px 17px; font-size: 11px; line-height: 1.75; border-left: 3px solid; margin-bottom: 14px; color: var(--t2); }
+.nb { background: rgba(59,130,246,.07); border-color: var(--blue); }
+.ng { background: rgba(34,197,94,.07); border-color: var(--green); }
+.ny { background: rgba(234,179,8,.07); border-color: var(--yellow); }
+.nr { background: rgba(239,68,68,.07); border-color: var(--red); }
+.np { background: rgba(168,85,247,.07); border-color: var(--purple); }
+
+/* STACK GRID */
+.stack-g { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--b1); border: 1px solid var(--b1); margin-bottom: 16px; }
+@media(max-width:640px){.stack-g{grid-template-columns:1fr;}}
+.sc { background: var(--s1); padding: 18px; position: relative; overflow: hidden; }
+.sc.active { background: var(--s2); }
+.sc.active::before { content:''; position:absolute; top:0;left:0;right:0;height:2px;background:var(--blue); }
+.sl { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--blue); margin-bottom: 5px; }
+.sn { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.sw { font-size: 11px; color: var(--t3); line-height: 1.6; margin-bottom: 8px; }
+.stags { display: flex; flex-wrap: wrap; gap: 4px; }
+.stag { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: var(--s3); color: var(--t3); border: 1px solid var(--b1); }
+.stag.new { background: rgba(34,197,94,.1); color: var(--green); border-color: rgba(34,197,94,.2); }
+.stag.upgrade { background: rgba(234,179,8,.1); color: var(--yellow); border-color: rgba(234,179,8,.2); }
+
+/* AGENTS SECTION */
+.agents-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+@media(max-width:600px){.agents-intro{grid-template-columns:1fr;}}
+
+.agents-context { border: 1px solid var(--b1); background: var(--s1); padding: 18px; }
+.ac-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.ac-dot { width: 6px; height: 6px; border-radius: 1px; flex-shrink: 0; }
+.ac-text { font-size: 11px; color: var(--t2); line-height: 1.7; }
+
+.agents-grid { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--b1); }
+.agent-division { }
+.div-header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--s2); border-bottom: 1px solid var(--b1); }
+.div-emoji { font-size: 14px; }
+.div-name { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--t1); }
+.div-count { font-size: 9px; color: var(--t3); margin-left: auto; letter-spacing: 0.1em; }
+
+.agent-row { display: flex; align-items: flex-start; gap: 0; border-bottom: 1px solid #161618; padding: 0; }
+.agent-row:last-child { border-bottom: none; }
+.agent-name { padding: 9px 16px; font-size: 11px; color: var(--cyan); font-family: 'DM Mono', monospace; min-width: 260px; flex-shrink: 0; border-right: 1px solid #161618; display: flex; align-items: center; gap: 8px; }
+.agent-emoji { font-size: 12px; }
+.agent-use { padding: 9px 16px; font-size: 11px; color: var(--t2); flex: 1; line-height: 1.5; }
+.agent-tags { padding: 9px 12px; display: flex; gap: 4px; align-items: center; border-left: 1px solid #161618; flex-wrap: wrap; min-width: 160px; }
+.atag { font-size: 9px; padding: 2px 6px; border-radius: 2px; letter-spacing: 0.03em; }
+.at-m { background: rgba(59,130,246,.1); color: var(--blue); border: 1px solid rgba(59,130,246,.2); }
+.at-s { background: rgba(34,197,94,.1); color: var(--green); border: 1px solid rgba(34,197,94,.2); }
+.at-p { background: rgba(168,85,247,.1); color: var(--purple); border: 1px solid rgba(168,85,247,.2); }
+.at-c { background: rgba(6,182,212,.1); color: var(--cyan); border: 1px solid rgba(6,182,212,.2); }
+
+@media(max-width:700px){
+  .agent-row { flex-direction: column; }
+  .agent-name { border-right: none; border-bottom: 1px solid #161618; min-width: auto; }
+  .agent-tags { border-left: none; border-top: 1px solid #161618; min-width: auto; }
+}
+
+/* INSTALL BOX */
+.install-box { border: 1px solid var(--b1); background: var(--s1); }
+.install-header { padding: 10px 16px; background: var(--s2); border-bottom: 1px solid var(--b1); font-size: 10px; color: var(--t3); letter-spacing: 0.1em; font-family: 'Syne', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.install-header::before { content: '●'; color: var(--red); } 
+.install-header::after { content: '●'; color: var(--yellow); margin-left: -4px; }
+.install-cmd { padding: 14px 16px; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--cyan); line-height: 2; }
+.install-comment { color: var(--t4); }
+
+/* MODULES */
+.mods-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+@media(max-width:640px){.mods-grid{grid-template-columns:1fr;}}
+.mc { border: 1px solid var(--b1); background: var(--s1); overflow: hidden; }
+.mc-head { padding: 13px 18px 10px; border-bottom: 1px solid var(--b1); display: flex; align-items: center; gap: 10px; }
+.mc-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
+.mc-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; flex: 1; }
+.mc-p { font-size: 9px; padding: 2px 7px; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; }
+.p-crit { background: rgba(239,68,68,.12); color: var(--red); border: 1px solid rgba(239,68,68,.25); }
+.p-hi { background: rgba(234,179,8,.12); color: var(--yellow); border: 1px solid rgba(234,179,8,.25); }
+.p-med { background: rgba(59,130,246,.12); color: var(--blue); border: 1px solid rgba(59,130,246,.25); }
+.mc-body { padding: 12px 18px; }
+.mc-route { font-size: 10px; color: var(--cyan); margin-bottom: 8px; }
+.mc-feats { list-style: none; margin-bottom: 10px; }
+.mc-feats li { font-size: 11px; color: var(--t2); padding: 4px 0; border-bottom: 1px solid #161618; display: flex; gap: 8px; line-height: 1.5; }
+.mc-feats li:last-child { border-bottom: none; }
+.mf-d { width: 4px; height: 4px; border-radius: 50%; background: var(--b2); margin-top: 6px; flex-shrink: 0; }
+.mc-shadcn { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 8px; border-top: 1px solid var(--b1); }
+.shad { font-size: 9px; padding: 2px 6px; border-radius: 2px; background: rgba(168,85,247,.08); color: var(--purple); border: 1px solid rgba(168,85,247,.15); font-family: 'DM Mono', monospace; }
+.mc-agent { font-size: 9px; padding: 2px 8px; border-radius: 2px; background: rgba(6,182,212,.08); color: var(--cyan); border: 1px solid rgba(6,182,212,.15); margin-top: 6px; display: inline-block; }
+
+/* SCREENS */
+.screens { display: flex; flex-direction: column; gap: 6px; }
+.sr { display: flex; border: 1px solid var(--b1); background: var(--s1); overflow: hidden; }
+.sr-route { padding: 10px 14px; background: var(--s2); border-right: 1px solid var(--b1); font-size: 10px; color: var(--cyan); font-family: 'DM Mono'; min-width: 200px; flex-shrink: 0; display: flex; align-items: center; }
+.sr-name { padding: 10px 14px; font-size: 11px; color: var(--t1); flex: 1; display: flex; align-items: center; }
+.sr-comp { padding: 10px 12px; border-left: 1px solid var(--b1); display: flex; flex-wrap: wrap; gap: 3px; align-items: center; min-width: 200px; }
+@media(max-width:700px){ .sr{flex-direction:column;} .sr-route{border-right:none;border-bottom:1px solid var(--b1);min-width:auto;} .sr-comp{border-left:none;border-top:1px solid var(--b1);min-width:auto;} }
+
+/* DB SCHEMA */
+.schema-g { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+@media(max-width:700px){.schema-g{grid-template-columns:1fr;}}
+.tc { border: 1px solid var(--b1); background: var(--s1); overflow: hidden; }
+.tc-h { background: var(--s2); padding: 7px 12px; border-bottom: 1px solid var(--b1); display: flex; align-items: center; gap: 6px; }
+.tc-icon { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; }
+.tc-n { font-size: 11px; color: var(--cyan); font-family: 'DM Mono'; font-weight: 500; }
+.tc-b { padding: 6px 0; }
+.fr { display: flex; align-items: center; padding: 3px 12px; gap: 7px; font-size: 10px; }
+.fn { color: var(--t2); flex: 1; font-family: 'DM Mono'; }
+.ft { color: var(--t4); font-size: 9px; }
+.pk { font-size: 8px; padding: 1px 5px; background: rgba(234,179,8,.1); color: var(--yellow); border-radius: 2px; border: 1px solid rgba(234,179,8,.2); }
+.fk { font-size: 8px; padding: 1px 5px; background: rgba(59,130,246,.1); color: var(--blue); border-radius: 2px; border: 1px solid rgba(59,130,246,.2); }
+
+/* PHASES */
+.phases { border: 1px solid var(--b1); overflow: hidden; }
+.phase { display: grid; grid-template-columns: 150px 1fr 80px; border-bottom: 1px solid var(--b1); }
+.phase:last-child { border-bottom: none; }
+.ph-left { padding: 18px; background: var(--s1); border-right: 1px solid var(--b1); display: flex; flex-direction: column; justify-content: center; }
+.ph-badge { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+.ph-weeks { font-size: 10px; color: var(--t4); }
+.ph-mid { padding: 18px; background: var(--s1); }
+.ph-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+.ph-items { display: flex; flex-wrap: wrap; gap: 5px; }
+.phi { font-size: 10px; padding: 2px 8px; border: 1px solid var(--b1); color: var(--t2); background: var(--s2); border-radius: 2px; }
+.phi.agent { background: rgba(6,182,212,.07); color: var(--cyan); border-color: rgba(6,182,212,.18); }
+.ph-right { padding: 18px; background: var(--s1); border-left: 1px solid var(--b1); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ph-eff { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
+.ph-effl { font-size: 9px; color: var(--t4); letter-spacing: 0.08em; margin-top: 1px; }
+@media(max-width:640px){ .phase{grid-template-columns:1fr;} .ph-left{border-right:none;border-bottom:1px solid var(--b1);} .ph-right{border-left:none;border-top:1px solid var(--b1);} }
+
+/* INTEGRATIONS */
+.int-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 1px; background: var(--b1); border: 1px solid var(--b1); margin-bottom: 14px; }
+@media(max-width:640px){.int-row{grid-template-columns:repeat(2,1fr);}}
+.ic { background: var(--s1); padding: 15px; text-align: center; }
+.ic-ico { font-size: 18px; margin-bottom: 5px; }
+.ic-n { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; margin-bottom: 2px; }
+.ic-r { font-size: 9px; color: var(--t4); line-height: 1.5; }
+
+/* FOLDER STRUCTURE */
+.folder { border: 1px solid var(--b1); background: var(--s1); }
+.folder-h { padding: 9px 14px; background: var(--s2); border-bottom: 1px solid var(--b1); font-size: 10px; color: var(--t3); letter-spacing: 0.1em; font-family: 'Syne', sans-serif; font-weight: 700; }
+.folder-body { padding: 14px; font-family: 'DM Mono', monospace; font-size: 11px; line-height: 1.9; color: var(--t2); }
+.folder-body .dir { color: var(--blue); }
+.folder-body .file { color: var(--t3); }
+.folder-body .agent-file { color: var(--cyan); }
+.folder-body .comment { color: var(--t4); font-size: 10px; font-style: italic; }
+
+/* FOOTER */
+.ftr { margin-top: 80px; padding-top: 20px; border-top: 1px solid var(--b1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.ftr-brand { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; }
+.ftr-brand span { color: var(--blue); }
+.ftr-note { font-size: 10px; color: var(--t4); letter-spacing: 0.05em; }
+
+/* ANIMS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.sec { animation: fadeUp .45s ease both; }
+.sec:nth-child(2){animation-delay:.04s}
+.sec:nth-child(3){animation-delay:.08s}
+.sec:nth-child(4){animation-delay:.12s}
+.sec:nth-child(5){animation-delay:.16s}
+.sec:nth-child(6){animation-delay:.20s}
+.sec:nth-child(7){animation-delay:.24s}
+.sec:nth-child(8){animation-delay:.28s}
+.sec:nth-child(9){animation-delay:.32s}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="brand"><div class="brand-hex"></div><div class="brand-name">Uprising<span>.</span>Studio</div></div>
+    <div class="version-pill">Blueprint v2.0 — Mis à jour Mai 2026</div>
+  </div>
+  <div class="hdr-hero">
+    <div class="eyebrow">Architecture Document — Agency OS</div>
+    <h1><div>Uprising</div><div class="l2">Agency OS</div><div class="l3">Blueprint v2</div></h1>
+    <p class="hdr-desc">Stack 2026 mis à jour : Next.js 16 + React 19 + TypeScript 5 + Tailwind v4 + shadcn/ui + Supabase + Claude API. Intègre les 14 agents spécialisés du repo <strong style="color:#fafafa">msitarzewski/agency-agents</strong> directement dans les modules de l'OS — chaque agent mappé à son module et activable via Claude Code.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-val">8</div><div class="stat-lab">Modules</div></div>
+      <div class="stat"><div class="stat-val">24</div><div class="stat-lab">Écrans</div></div>
+      <div class="stat"><div class="stat-val">14</div><div class="stat-lab">Agents</div></div>
+      <div class="stat"><div class="stat-val">5</div><div class="stat-lab">Phases Dev</div></div>
+      <div class="stat"><div class="stat-val">5</div><div class="stat-lab">Intégrations</div></div>
+      <div class="stat"><div class="stat-val">86.9k★</div><div class="stat-lab">Repo Stars</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 01 : STACK 2026 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-n">01</div><div class="sec-t">Stack 2026 — Mis à Jour</div><div class="sec-l"></div></div>
+
+  <div class="note nb"><strong style="color:#93c5fd">Upgrade recommandé :</strong> Les recherches 2026 confirment que Next.js 16 + React 19 + Tailwind v4 est maintenant le standard de production pour les dashboards admin avec shadcn/ui. La colocation-based architecture (feature keeps its own pages/components) est le pattern dominant. On upgrade le blueprint en conséquence — le changement de Next.js 15 → 16 est non-breaking.</div>
+
+  <div class="stack-g">
+    <div class="sc active">
+      <div class="sl">Frontend Core</div>
+      <div class="sn">Next.js 16 + React 19</div>
+      <div class="sw">App Router, React Compiler (auto-memoization), Server Components, Server Actions. Colocation-first architecture — chaque module garde ses pages/components/logic dans son dossier.</div>
+      <div class="stags"><span class="stag upgrade">↑ v15→v16</span><span class="stag">App Router</span><span class="stag">React Compiler</span><span class="stag">RSC</span></div>
+    </div>
+    <div class="sc active">
+      <div class="sl">Styling</div>
+      <div class="sn">Tailwind CSS v4 + shadcn/ui</div>
+      <div class="sw">Tailwind v4 : config CSS-native, plus rapide, 0 config JS. shadcn/ui : composants copiés dans le repo (full ownership). DataTable, Kanban, Calendar, Command Palette, Charts — tout natif.</div>
+      <div class="stags"><span class="stag upgrade">↑ v3→v4</span><span class="stag">CSS-native config</span><span class="stag">Radix UI</span><span class="stag">tweakcn</span></div>
+    </div>
+    <div class="sc active">
+      <div class="sl">Backend / Auth</div>
+      <div class="sn">Supabase + Clerk Auth</div>
+      <div class="sw">Supabase pour PostgreSQL, Storage, Realtime. Clerk pour l'auth — meilleure DX que Supabase Auth, RBAC natif (Kael owner / Xavier ops / futurs membres). RLS Policies Supabase pour la sécurité data.</div>
+      <div class="stags"><span class="stag new">Clerk</span><span class="stag">PostgreSQL</span><span class="stag">RLS</span><span class="stag">Realtime</span><span class="stag">Storage</span></div>
+    </div>
+    <div class="sc active">
+      <div class="sl">Data & State</div>
+      <div class="sn">TanStack Query v5 + nuqs</div>
+      <div class="sw">TanStack Query : server prefetch + client cache. nuqs pour URL state (search/filter/pagination) — shallow: true garde les interactions côté client. Zustand pour l'état UI global (sidebar, theme).</div>
+      <div class="stags"><span class="stag new">nuqs</span><span class="stag">TanStack v5</span><span class="stag">Zustand</span><span class="stag">Optimistic UI</span></div>
+    </div>
+    <div class="sc active">
+      <div class="sl">Tables & Forms</div>
+      <div class="sn">TanStack Table v8 + RHF + Zod</div>
+      <div class="sw">TanStack Table v8 : tri, filtre, pagination server-side. React Hook Form + Zod : formulaires type-safe avec validation schema. Intégration native shadcn/ui Form components.</div>
+      <div class="stags"><span class="stag">TanStack Table v8</span><span class="stag">RHF</span><span class="stag">Zod</span><span class="stag">Server Validation</span></div>
+    </div>
+    <div class="sc active">
+      <div class="sl">IA Cerveau</div>
+      <div class="sn">Claude API + agency-agents</div>
+      <div class="sw">Claude API (Sonnet) pour les features IA de l'OS. agency-agents repo (86.9k★) pour les agents Claude Code du projet — installés dans ~/.claude/agents/ et activables pendant le dev.</div>
+      <div class="stags"><span class="stag new">agency-agents</span><span class="stag">claude-sonnet</span><span class="stag">Streaming</span><span class="stag">Tool Use</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 02 : AGENCY-AGENTS REPO -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-n">02</div><div class="sec-t">Agency-Agents — 14 Agents Sélectionnés pour Uprising OS</div><div class="sec-l"></div></div>
+
+  <div class="agents-intro">
+    <div class="agents-context">
+      <div class="ac-title"><div class="ac-dot" style="background:var(--cyan)"></div>C'est quoi ce repo ?</div>
+      <div class="ac-text">msitarzewski/agency-agents (86.9k ⭐) est une collection de 144 agents IA spécialisés avec personnalité, workflows et livrables concrets. Chaque agent est un fichier .md installé dans ~/.claude/agents/ pour Claude Code. Tu les actives en disant "Use the [Agent Name] agent" dans ta session Claude Code. Pour Uprising Studio, j'ai sélectionné les 14 agents les plus pertinents parmi les divisions Marketing, Sales, Engineering, Design et Project Management.</div>
+    </div>
+    <div class="agents-context">
+      <div class="ac-title"><div class="ac-dot" style="background:var(--green)"></div>Comment les installer</div>
+      <div class="ac-text">Clone le repo, run le script d'installation pour Claude Code. Les agents s'installent automatiquement dans ~/.claude/agents/. Pendant le dev de l'Agency OS, tu peux activer le Frontend Developer pour coder, l'Instagram Curator pour le module Contenu, l'Outbound Strategist pour le module Prospection, etc. Ils connaissent leur domaine en profondeur et produisent du code + des livrables directs.</div>
+    </div>
+  </div>
+
+  <div class="install-box" style="margin-bottom:16px">
+    <div class="install-header">Terminal — Installation Claude Code</div>
+    <div class="install-cmd">
+      <span class="install-comment"># 1. Clone le repo</span><br>
+      git clone https://github.com/msitarzewski/agency-agents<br>
+      cd agency-agents<br><br>
+      <span class="install-comment"># 2. Install pour Claude Code (tous les agents)</span><br>
+      ./scripts/install.sh --tool claude-code<br><br>
+      <span class="install-comment"># 3. Ou copier seulement les agents sélectionnés pour Uprising</span><br>
+      cp marketing/marketing-instagram-curator.md ~/.claude/agents/<br>
+      cp marketing/marketing-content-creator.md ~/.claude/agents/<br>
+      cp sales/sales-outbound-strategist.md ~/.claude/agents/<br>
+      cp sales/sales-deal-strategist.md ~/.claude/agents/<br>
+      cp engineering/engineering-frontend-developer.md ~/.claude/agents/<br>
+      cp engineering/engineering-backend-architect.md ~/.claude/agents/<br>
+      cp engineering/engineering-database-optimizer.md ~/.claude/agents/<br>
+      cp engineering/engineering-rapid-prototyper.md ~/.claude/agents/<br>
+      cp design/design-ui-designer.md ~/.claude/agents/<br>
+      cp project-management/project-management-studio-producer.md ~/.claude/agents/<br>
+      cp support/support-analytics-reporter.md ~/.claude/agents/<br>
+      cp support/support-finance-tracker.md ~/.claude/agents/<br>
+      cp specialized/agents-orchestrator.md ~/.claude/agents/<br>
+      cp testing/testing-reality-checker.md ~/.claude/agents/
+    </div>
+  </div>
+
+  <div class="agents-grid">
+
+    <!-- ENGINEERING -->
+    <div class="agent-division">
+      <div class="div-header"><div class="div-emoji">💻</div><div class="div-name">Engineering Division</div><div class="div-count">4 agents sélectionnés</div></div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🎨</div>Frontend Developer</div>
+        <div class="agent-use">Coder tous les modules React/Next.js de l'OS — DataTables, Kanban, Calendar, Sidebar collapsible, dark/light toggle. Pixel-perfect, accessible, Core Web Vitals.</div>
+        <div class="agent-tags"><span class="atag at-c">Dev Phase 1-5</span><span class="atag at-p">shadcn/ui</span></div>
+      </div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🏗️</div>Backend Architect</div>
+        <div class="agent-use">Concevoir les API Routes Next.js, le schéma Supabase, les RLS Policies, les Server Actions. Design microservices pour les intégrations Brevo/Todoist/Metricool.</div>
+        <div class="agent-tags"><span class="atag at-c">Dev Phase 1-4</span><span class="atag at-s">Supabase</span></div>
+      </div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🗄️</div>Database Optimizer</div>
+        <div class="agent-use">Optimiser le schéma PostgreSQL Supabase — indexing, slow queries, migration planning. Critique pour les DataTables avec filtres/sort sur 1000+ leads.</div>
+        <div class="agent-tags"><span class="atag at-c">Dev Phase 3</span><span class="atag at-s">PostgreSQL</span></div>
+      </div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">⚡</div>Rapid Prototyper</div>
+        <div class="agent-use">Prototyper rapidement chaque module avant le polish — MVPs fonctionnels en heures. Idéal pour valider le flux CRM et Pipeline avant de coder la version production.</div>
+        <div class="agent-tags"><span class="atag at-c">Dev Phase 2</span><span class="atag at-m">MVP fast</span></div>
+      </div>
+    </div>
+
+    <!-- DESIGN -->
+    <div class="agent-division">
+      <div class="div-header"><div class="div-emoji">🎨</div><div class="div-name">Design Division</div><div class="div-count">1 agent sélectionné</div></div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🎯</div>UI Designer</div>
+        <div class="agent-use">Définir le design system Uprising Studio dans l'OS — tokens CSS, palette dark/light, typographie Syne, composants custom qui dépassent le style shadcn par défaut.</div>
+        <div class="agent-tags"><span class="atag at-p">Design System</span><span class="atag at-c">Dev Phase 1</span></div>
+      </div>
+    </div>
+
+    <!-- MARKETING -->
+    <div class="agent-division">
+      <div class="div-header"><div class="div-emoji">📢</div><div class="div-name">Marketing Division</div><div class="div-count">3 agents sélectionnés</div></div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">📸</div>Instagram Curator</div>
+        <div class="agent-use">Alimenter le module Contenu — stratégie visuelle, calendrier éditorial, hooks pour Reels TOF/MOF. Génère du contenu Instagram directement actionnable pour @kael_belc.</div>
+        <div class="agent-tags"><span class="atag at-m">Module Contenu</span><span class="atag at-s">@kael_belc</span></div>
+      </div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">📝</div>Content Creator</div>
+        <div class="agent-use">Scripts complets pour Reels, carousels, hooks. Génère le contenu directement dans le module Contenu de l'OS via Claude. Calendrier éditorial multi-plateforme.</div>
+        <div class="agent-tags"><span class="atag at-m">Module Contenu</span><span class="atag at-c">Claude API</span></div>
+      </div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🔍</div>SEO Specialist</div>
+        <div class="agent-use">Optimiser la présence web d'Uprising Studio et des clients PME. Utile pour le module CRM quand tu génères des rapports clients avec données SEO.</div>
+        <div class="agent-tags"><span class="atag at-m">Module CRM</span><span class="atag at-s">Clients PME</span></div>
+      </div>
+    </div>
+
+    <!-- SALES -->
+    <div class="agent-division">
+      <div class="div-header"><div class="div-emoji">💼</div><div class="div-name">Sales Division</div><div class="div-count">3 agents sélectionnés</div></div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🎯</div>Outbound Strategist</div>
+        <div class="agent-use">Signal-based prospecting, séquences multi-touch, ciblage ICP construction/trades Québec. Alimente directement le module Prospection — emails froids, segmentation, scoring.</div>
+        <div class="agent-tags"><span class="atag at-s">Module Prospect.</span><span class="atag at-m">Cold Email</span></div>
+      </div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">♟️</div>Deal Strategist</div>
+        <div class="agent-use">MEDDPICC qualification, competitive positioning, win planning. Alimente le module Pipeline — score chaque deal, expose les risques, construit des stratégies de closing Trifecta.</div>
+        <div class="agent-tags"><span class="atag at-s">Module Pipeline</span><span class="atag at-m">Closing</span></div>
+      </div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🏹</div>Proposal Strategist</div>
+        <div class="agent-use">Générer des propositions Trifecta qui persuadent. Intégré dans le module Pipeline — 1 clic pour générer une proposition customisée par industrie, pain points et prix cible.</div>
+        <div class="agent-tags"><span class="atag at-s">Module Pipeline</span><span class="atag at-c">Trifecta</span></div>
+      </div>
+    </div>
+
+    <!-- PROJECT MANAGEMENT -->
+    <div class="agent-division">
+      <div class="div-header"><div class="div-emoji">🎬</div><div class="div-name">Project Management Division</div><div class="div-count">1 agent sélectionné</div></div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🎬</div>Studio Producer</div>
+        <div class="agent-use">High-level orchestration des 5 clients pro bono simultanés. Alimente le module Livrables — priorise, répartit entre Kael et Xavier, alerte sur les retards.</div>
+        <div class="agent-tags"><span class="atag at-p">Module Livrables</span><span class="atag at-m">Pro Bono</span></div>
+      </div>
+    </div>
+
+    <!-- SUPPORT + SPECIALIZED -->
+    <div class="agent-division">
+      <div class="div-header"><div class="div-emoji">🛟</div><div class="div-name">Support + Specialized</div><div class="div-count">2 agents sélectionnés</div></div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">📊</div>Analytics Reporter</div>
+        <div class="agent-use">KPIs dashboard — revenus vs objectif, taux de réponse emails, portée Reels, ratio TOF/MOF. Génère automatiquement des rapports clients depuis les données de l'OS.</div>
+        <div class="agent-tags"><span class="atag at-p">Dashboard KPIs</span><span class="atag at-s">Rapports</span></div>
+      </div>
+      <div class="agent-row">
+        <div class="agent-name"><div class="agent-emoji">🎭</div>Agents Orchestrator</div>
+        <div class="agent-use">Coordonner plusieurs agents simultanément pour les tâches complexes — ex: Outbound Strategist + Deal Strategist + Proposal Strategist pour un cycle de vente complet.</div>
+        <div class="agent-tags"><span class="atag at-c">Multi-agent</span><span class="atag at-p">Orchestration</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 03 : FOLDER STRUCTURE -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-n">03</div><div class="sec-t">Structure de Fichiers — Colocation Architecture 2026</div><div class="sec-l"></div></div>
+
+  <div class="note ng">Pattern recommandé 2026 : chaque feature garde ses propres pages, components et logic dans son dossier de route. Les composants partagés et la config restent au top level. Ce pattern est plus scalable et co-loc friendly pour les agents Claude Code.</div>
+
+  <div class="folder">
+    <div class="folder-h">uprising-agency-os/ — Arborescence complète</div>
+    <div class="folder-body">
+<span class="dir">├── .claude/</span><br>
+<span class="agent-file">│   └── agents/</span>   <span class="comment">← agency-agents installés ici</span><br>
+<span class="agent-file">│       ├── engineering-frontend-developer.md</span><br>
+<span class="agent-file">│       ├── engineering-backend-architect.md</span><br>
+<span class="agent-file">│       ├── marketing-instagram-curator.md</span><br>
+<span class="agent-file">│       ├── sales-outbound-strategist.md</span><br>
+<span class="agent-file">│       ├── sales-deal-strategist.md</span><br>
+<span class="agent-file">│       ├── sales-proposal-strategist.md</span><br>
+<span class="agent-file">│       ├── support-analytics-reporter.md</span><br>
+<span class="agent-file">│       └── specialized-agents-orchestrator.md</span>   <span class="comment">← + 6 autres</span><br>
+<span class="dir">├── app/</span><br>
+<span class="dir">│   ├── (auth)/</span>   <span class="comment">← Clerk auth routes</span><br>
+<span class="file">│   │   ├── sign-in/page.tsx</span><br>
+<span class="file">│   │   └── sign-up/page.tsx</span><br>
+<span class="dir">│   └── (os)/</span>   <span class="comment">← OS routes (protected)</span><br>
+<span class="dir">│       ├── layout.tsx</span>   <span class="comment">← Sidebar collapsible + Topbar</span><br>
+<span class="file">│       ├── page.tsx</span>   <span class="comment">← /os Dashboard KPIs</span><br>
+<span class="dir">│       ├── content/</span>   <span class="comment">← Module Contenu — PRIORITÉ 1</span><br>
+<span class="file">│       │   ├── page.tsx</span>   <span class="comment">← Calendrier + Kanban posts</span><br>
+<span class="file">│       │   ├── new/page.tsx</span>   <span class="comment">← Créer post + Claude gen</span><br>
+<span class="file">│       │   ├── [id]/page.tsx</span><br>
+<span class="dir">│       │   └── _components/</span>   <span class="comment">← Calendar, KanbanBoard, PostCard</span><br>
+<span class="dir">│       ├── clients/</span>   <span class="comment">← CRM</span><br>
+<span class="dir">│       │   └── _components/</span>   <span class="comment">← ClientTable, ClientSheet, Timeline</span><br>
+<span class="dir">│       ├── pipeline/</span>   <span class="comment">← Pipeline de vente Kanban</span><br>
+<span class="dir">│       │   └── _components/</span>   <span class="comment">← PipelineBoard, DealCard, DealSheet</span><br>
+<span class="dir">│       ├── deliverables/</span>   <span class="comment">← Suivi livrables</span><br>
+<span class="dir">│       ├── prospection/</span>   <span class="comment">← Leads + Brevo KPIs</span><br>
+<span class="dir">│       │   └── _components/</span>   <span class="comment">← LeadsTable, CampaignStats, EmailGen</span><br>
+<span class="dir">│       ├── finances/</span>   <span class="comment">← Revenus + Factures</span><br>
+<span class="dir">│       ├── team/</span>   <span class="comment">← Xavier + équipe</span><br>
+<span class="dir">│       └── ai/</span>   <span class="comment">← Hub Claude — tous les outils IA</span><br>
+<span class="dir">├── components/</span>   <span class="comment">← Composants partagés</span><br>
+<span class="dir">│   ├── ui/</span>   <span class="comment">← shadcn/ui (copiés ici)</span><br>
+<span class="dir">│   ├── layout/</span>   <span class="comment">← Sidebar, Topbar, CommandPalette</span><br>
+<span class="dir">│   └── shared/</span>   <span class="comment">← DataTable base, KanbanBase, Charts</span><br>
+<span class="dir">├── lib/</span><br>
+<span class="file">│   ├── supabase/</span>   <span class="comment">← client, server, types</span><br>
+<span class="file">│   ├── claude.ts</span>   <span class="comment">← Claude API wrapper avec streaming</span><br>
+<span class="file">│   ├── brevo.ts</span>   <span class="comment">← Brevo API client</span><br>
+<span class="file">│   └── validations/</span>   <span class="comment">← Zod schemas par module</span><br>
+<span class="dir">├── app/api/</span><br>
+<span class="file">│   ├── claude/route.ts</span>   <span class="comment">← Streaming Claude API</span><br>
+<span class="file">│   ├── brevo/route.ts</span>   <span class="comment">← Proxy Brevo stats</span><br>
+<span class="file">│   └── todoist/route.ts</span>   <span class="comment">← Sync tâches Xavier</span><br>
+<span class="file">├── middleware.ts</span>   <span class="comment">← Clerk auth protection</span><br>
+<span class="file">├── next.config.ts</span><br>
+<span class="file">└── supabase/migrations/</span>   <span class="comment">← SQL migrations versionnées</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 04 : MODULES -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-n">04</div><div class="sec-t">Architecture des 8 Modules avec Agents Mappés</div><div class="sec-l"></div></div>
+
+  <div class="mods-grid">
+
+    <div class="mc">
+      <div class="mc-head"><div class="mc-dot" style="background:var(--red)"></div><div class="mc-title">Contenu & Calendrier Éditorial</div><span class="mc-p p-crit">Critique</span></div>
+      <div class="mc-body">
+        <div class="mc-route">/os/content</div>
+        <ul class="mc-feats">
+          <li><div class="mf-d"></div>Calendrier visuel drag & drop (vue mois/semaine) avec Suspense boundaries</li>
+          <li><div class="mf-d"></div>Kanban : Idée → Script → Tournage → Montage → Publié (5 colonnes)</li>
+          <li><div class="mf-d"></div>Compteur TOF/MOF auto — alerte si ratio dévie de 75/25</li>
+          <li><div class="mf-d"></div>Stats par post : vues, engagement (sync Metricool)</li>
+          <li><div class="mf-d"></div>Générateur hooks/scripts via Claude API streaming</li>
+        </ul>
+        <div class="mc-shadcn"><span class="shad">Calendar</span><span class="shad">Badge</span><span class="shad">Progress</span><span class="shad">Sheet</span><span class="shad">Dialog</span><span class="shad">Skeleton</span><span class="shad">Textarea</span></div>
+        <div class="mc-agent">🎨 Instagram Curator · 📝 Content Creator</div>
+      </div>
+    </div>
+
+    <div class="mc">
+      <div class="mc-head"><div class="mc-dot" style="background:var(--blue)"></div><div class="mc-title">CRM — Gestion Clients</div><span class="mc-p p-hi">Haute</span></div>
+      <div class="mc-body">
+        <div class="mc-route">/os/clients</div>
+        <ul class="mc-feats">
+          <li><div class="mf-d"></div>DataTable TanStack v8 + nuqs URL state (search/filter/sort)</li>
+          <li><div class="mf-d"></div>Fiche client complète : contact, type pro-bono/payant, services</li>
+          <li><div class="mf-d"></div>Timeline communications + upload contrats (Supabase Storage)</li>
+          <li><div class="mf-d"></div>Résumé call auto — Claude paste transcription → résumé structuré</li>
+          <li><div class="mf-d"></div>Rapport client PDF généré via Claude en 1 clic</li>
+        </ul>
+        <div class="mc-shadcn"><span class="shad">DataTable</span><span class="shad">Avatar</span><span class="shad">Tabs</span><span class="shad">Drawer</span><span class="shad">Badge</span><span class="shad">Skeleton</span></div>
+        <div class="mc-agent">🔍 SEO Specialist · 📊 Analytics Reporter</div>
+      </div>
+    </div>
+
+    <div class="mc">
+      <div class="mc-head"><div class="mc-dot" style="background:var(--green)"></div><div class="mc-title">Pipeline de Vente</div><span class="mc-p p-hi">Haute</span></div>
+      <div class="mc-body">
+        <div class="mc-route">/os/pipeline</div>
+        <ul class="mc-feats">
+          <li><div class="mf-d"></div>Kanban 7 colonnes avec @hello-pangea/dnd (drag & drop accessible)</li>
+          <li><div class="mf-d"></div>Valeur estimée par deal + total pipeline temps réel</li>
+          <li><div class="mf-d"></div>MEDDPICC scoring via Deal Strategist agent</li>
+          <li><div class="mf-d"></div>Générateur proposition Trifecta personnalisée (Claude API)</li>
+          <li><div class="mf-d"></div>Alerte si deal stagne &gt;7 jours (Supabase Realtime)</li>
+        </ul>
+        <div class="mc-shadcn"><span class="shad">Card</span><span class="shad">Badge</span><span class="shad">HoverCard</span><span class="shad">Tooltip</span><span class="shad">Alert</span><span class="shad">Sheet</span></div>
+        <div class="mc-agent">♟️ Deal Strategist · 🏹 Proposal Strategist</div>
+      </div>
+    </div>
+
+    <div class="mc">
+      <div class="mc-head"><div class="mc-dot" style="background:var(--yellow)"></div><div class="mc-title">Suivi des Livrables</div><span class="mc-p p-hi">Haute</span></div>
+      <div class="mc-body">
+        <div class="mc-route">/os/deliverables</div>
+        <ul class="mc-feats">
+          <li><div class="mf-d"></div>Checklist par client avec Progress bar %</li>
+          <li><div class="mf-d"></div>Deadline + assigné Kael/Xavier + badge rouge si retard auto</li>
+          <li><div class="mf-d"></div>Commentaires internes par livrable (Supabase Realtime)</li>
+          <li><div class="mf-d"></div>Vue globale + vue par client avec Accordion</li>
+          <li><div class="mf-d"></div>Notifications browser si deadline dans 48h</li>
+        </ul>
+        <div class="mc-shadcn"><span class="shad">Checkbox</span><span class="shad">Progress</span><span class="shad">Select</span><span class="shad">DatePicker</span><span class="shad">Accordion</span><span class="shad">Alert</span></div>
+        <div class="mc-agent">🎬 Studio Producer</div>
+      </div>
+    </div>
+
+    <div class="mc">
+      <div class="mc-head"><div class="mc-dot" style="background:var(--cyan)"></div><div class="mc-title">Prospection & Leads</div><span class="mc-p p-med">Medium</span></div>
+      <div class="mc-body">
+        <div class="mc-route">/os/prospection</div>
+        <ul class="mc-feats">
+          <li><div class="mf-d"></div>DataTable leads + nuqs filters (ville, statut, qualité site)</li>
+          <li><div class="mf-d"></div>Statuts : Non contacté → Email 1 → Email 2 → Email 3 → Répondu → Call</li>
+          <li><div class="mf-d"></div>KPIs Brevo via API : ouverture, clics, réponses par campagne</li>
+          <li><div class="mf-d"></div>Générateur email froid Outbound Strategist (Claude API)</li>
+          <li><div class="mf-d"></div>Import CSV depuis Google Sheet Xavier + déduplication auto</li>
+        </ul>
+        <div class="mc-shadcn"><span class="shad">DataTable</span><span class="shad">Command</span><span class="shad">Badge</span><span class="shad">Charts</span><span class="shad">Sheet</span><span class="shad">Skeleton</span></div>
+        <div class="mc-agent">🎯 Outbound Strategist</div>
+      </div>
+    </div>
+
+    <div class="mc">
+      <div class="mc-head"><div class="mc-dot" style="background:var(--purple)"></div><div class="mc-title">Finances & Revenus</div><span class="mc-p p-med">Medium</span></div>
+      <div class="mc-body">
+        <div class="mc-route">/os/finances</div>
+        <ul class="mc-feats">
+          <li><div class="mf-d"></div>Area chart revenus réalisés vs objectif mensuel (Recharts)</li>
+          <li><div class="mf-d"></div>MRR tracker + projection fin de mois (algorithme linéaire)</li>
+          <li><div class="mf-d"></div>Dépenses outils avec catégories (Brevo, Apify, Vercel, etc.)</li>
+          <li><div class="mf-d"></div>Factures : Envoyée / En attente / Payée + export CSV</li>
+          <li><div class="mf-d"></div>Revenus par client et par service (BarChart)</li>
+        </ul>
+        <div class="mc-shadcn"><span class="shad">AreaChart</span><span class="shad">BarChart</span><span class="shad">DataTable</span><span class="shad">Badge</span><span class="shad">Card</span></div>
+        <div class="mc-agent">📊 Analytics Reporter · 💰 Finance Tracker</div>
+      </div>
+    </div>
+
+    <div class="mc">
+      <div class="mc-head"><div class="mc-dot" style="background:var(--orange)"></div><div class="mc-title">Gestion Équipe (Xavier + futurs)</div><span class="mc-p p-med">Medium</span></div>
+      <div class="mc-body">
+        <div class="mc-route">/os/team</div>
+        <ul class="mc-feats">
+          <li><div class="mf-d"></div>Profil membre : rôle (Clerk RBAC), compétences, tâches du mois</li>
+          <li><div class="mf-d"></div>KPIs par membre : leads scrapés, livrables complétés, taux completion</li>
+          <li><div class="mf-d"></div>Check-in hebdo : résumé soumis par Xavier → validé par Kael</li>
+          <li><div class="mf-d"></div>Compensation tracker revenue share % (Supabase)</li>
+          <li><div class="mf-d"></div>Sync optionnel Todoist via API pour les tâches assignées</li>
+        </ul>
+        <div class="mc-shadcn"><span class="shad">Avatar</span><span class="shad">DataTable</span><span class="shad">Progress</span><span class="shad">Tabs</span><span class="shad">Textarea</span><span class="shad">Badge</span></div>
+        <div class="mc-agent">🎬 Studio Producer</div>
+      </div>
+    </div>
+
+    <div class="mc">
+      <div class="mc-head"><div class="mc-dot" style="background:#6366f1)"></div><div class="mc-title">Dashboard KPIs + Hub IA</div><span class="mc-p p-med">Medium</span></div>
+      <div class="mc-body">
+        <div class="mc-route">/os · /os/ai</div>
+        <ul class="mc-feats">
+          <li><div class="mf-d"></div>Dashboard home : revenus mois, livrables retard, ratio TOF/MOF</li>
+          <li><div class="mf-d"></div>Daily briefing Claude : top 3 priorités du jour analysées depuis les KPIs</li>
+          <li><div class="mf-d"></div>Command Palette (Cmd+K) : naviguer, rechercher, déclencher actions IA</li>
+          <li><div class="mf-d"></div>Hub /os/ai : tous les générateurs Claude centralisés (scripts, emails, rapports)</li>
+          <li><div class="mf-d"></div>Infobar contextuelle (pattern next-shadcn-dashboard-starter)</li>
+        </ul>
+        <div class="mc-shadcn"><span class="shad">Command</span><span class="shad">Card</span><span class="shad">Alert</span><span class="shad">Charts</span><span class="shad">ScrollArea</span><span class="shad">Skeleton</span></div>
+        <div class="mc-agent">🎭 Agents Orchestrator · 📊 Analytics Reporter</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 05 : SCREENS -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-n">05</div><div class="sec-t">24 Routes — Carte Complète</div><div class="sec-l"></div></div>
+  <div class="screens">
+    <div class="sr"><div class="sr-route">/os</div><div class="sr-name">Dashboard KPIs + daily briefing Claude</div><div class="sr-comp"><span class="shad">Card</span><span class="shad">Charts</span><span class="shad">Alert</span><span class="shad">Infobar</span></div></div>
+    <div class="sr"><div class="sr-route">/os/content</div><div class="sr-name">Calendrier éditorial + Kanban posts</div><div class="sr-comp"><span class="shad">Calendar</span><span class="shad">Kanban</span><span class="shad">Badge</span></div></div>
+    <div class="sr"><div class="sr-route">/os/content/new</div><div class="sr-name">Créer post + générateur Claude (Instagram Curator)</div><div class="sr-comp"><span class="shad">Form</span><span class="shad">Textarea</span><span class="shad">Select</span></div></div>
+    <div class="sr"><div class="sr-route">/os/content/[id]</div><div class="sr-name">Détail post — script, stats Metricool, historique</div><div class="sr-comp"><span class="shad">Tabs</span><span class="shad">Badge</span><span class="shad">Sheet</span></div></div>
+    <div class="sr"><div class="sr-route">/os/clients</div><div class="sr-name">Liste clients — DataTable + nuqs filters</div><div class="sr-comp"><span class="shad">DataTable</span><span class="shad">DropdownMenu</span><span class="shad">Badge</span></div></div>
+    <div class="sr"><div class="sr-route">/os/clients/new</div><div class="sr-name">Ajouter un client — Form + Zod validation</div><div class="sr-comp"><span class="shad">Form</span><span class="shad">Input</span><span class="shad">Select</span></div></div>
+    <div class="sr"><div class="sr-route">/os/clients/[id]</div><div class="sr-name">Fiche client — tabs infos/livrables/revenus/communications</div><div class="sr-comp"><span class="shad">Tabs</span><span class="shad">Timeline</span><span class="shad">Progress</span></div></div>
+    <div class="sr"><div class="sr-route">/os/pipeline</div><div class="sr-name">Kanban 7 colonnes drag & drop + total pipeline</div><div class="sr-comp"><span class="shad">Kanban</span><span class="shad">Card</span><span class="shad">HoverCard</span></div></div>
+    <div class="sr"><div class="sr-route">/os/deliverables</div><div class="sr-name">Tous livrables — Accordion par client + alertes retard</div><div class="sr-comp"><span class="shad">Accordion</span><span class="shad">Checkbox</span><span class="shad">Progress</span></div></div>
+    <div class="sr"><div class="sr-route">/os/deliverables/[id]</div><div class="sr-name">Détail livrable — checklist + commentaires Realtime</div><div class="sr-comp"><span class="shad">Checkbox</span><span class="shad">Textarea</span><span class="shad">Avatar</span></div></div>
+    <div class="sr"><div class="sr-route">/os/prospection</div><div class="sr-name">Table leads + nuqs filters + statuts campagne</div><div class="sr-comp"><span class="shad">DataTable</span><span class="shad">Command</span><span class="shad">Badge</span></div></div>
+    <div class="sr"><div class="sr-route">/os/prospection/campaigns</div><div class="sr-name">Campagnes Brevo — KPIs ouverture/réponse/clics</div><div class="sr-comp"><span class="shad">Charts</span><span class="shad">Card</span><span class="shad">Progress</span></div></div>
+    <div class="sr"><div class="sr-route">/os/prospection/email-gen</div><div class="sr-name">Outbound Strategist — génère email froid par lead</div><div class="sr-comp"><span class="shad">Form</span><span class="shad">Textarea</span><span class="shad">Button</span></div></div>
+    <div class="sr"><div class="sr-route">/os/finances</div><div class="sr-name">Dashboard finances — MRR, revenus vs objectif</div><div class="sr-comp"><span class="shad">AreaChart</span><span class="shad">BarChart</span><span class="shad">Card</span></div></div>
+    <div class="sr"><div class="sr-route">/os/finances/invoices</div><div class="sr-name">Factures — statut + export CSV</div><div class="sr-comp"><span class="shad">DataTable</span><span class="shad">Badge</span><span class="shad">Select</span></div></div>
+    <div class="sr"><div class="sr-route">/os/team</div><div class="sr-name">Équipe — profils, KPIs, taux completion</div><div class="sr-comp"><span class="shad">Avatar</span><span class="shad">Progress</span><span class="shad">Tabs</span></div></div>
+    <div class="sr"><div class="sr-route">/os/team/[id]</div><div class="sr-name">Profil membre — check-ins, tâches, compensation</div><div class="sr-comp"><span class="shad">Timeline</span><span class="shad">Badge</span><span class="shad">Textarea</span></div></div>
+    <div class="sr"><div class="sr-route">/os/ai</div><div class="sr-name">Hub IA — tous les générateurs Claude centralisés</div><div class="sr-comp"><span class="shad">Tabs</span><span class="shad">Textarea</span><span class="shad">ScrollArea</span></div></div>
+    <div class="sr"><div class="sr-route">/os/settings</div><div class="sr-name">Paramètres — profil Clerk, dark/light, intégrations API</div><div class="sr-comp"><span class="shad">Switch</span><span class="shad">Tabs</span><span class="shad">Form</span></div></div>
+  </div>
+</div>
+
+<!-- SECTION 06 : DATABASE -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-n">06</div><div class="sec-t">Schéma Supabase — 6 Tables Core</div><div class="sec-l"></div></div>
+  <div class="schema-g">
+    <div class="tc"><div class="tc-h"><div class="tc-icon"></div><div class="tc-n">clients</div></div><div class="tc-b">
+      <div class="fr"><span class="fn">id</span><span class="ft">uuid</span><span class="pk">PK</span></div>
+      <div class="fr"><span class="fn">name</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">email</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">type</span><span class="ft">pro_bono|paid</span></div>
+      <div class="fr"><span class="fn">status</span><span class="ft">active|archived</span></div>
+      <div class="fr"><span class="fn">services</span><span class="ft">text[]</span></div>
+      <div class="fr"><span class="fn">contract_url</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">created_at</span><span class="ft">timestamptz</span></div>
+    </div></div>
+    <div class="tc"><div class="tc-h"><div class="tc-icon"></div><div class="tc-n">deliverables</div></div><div class="tc-b">
+      <div class="fr"><span class="fn">id</span><span class="ft">uuid</span><span class="pk">PK</span></div>
+      <div class="fr"><span class="fn">client_id</span><span class="ft">uuid</span><span class="fk">FK</span></div>
+      <div class="fr"><span class="fn">title</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">status</span><span class="ft">enum</span></div>
+      <div class="fr"><span class="fn">progress</span><span class="ft">int (0-100)</span></div>
+      <div class="fr"><span class="fn">assigned_to</span><span class="ft">uuid</span><span class="fk">FK</span></div>
+      <div class="fr"><span class="fn">deadline</span><span class="ft">date</span></div>
+      <div class="fr"><span class="fn">is_late</span><span class="ft">bool (computed)</span></div>
+    </div></div>
+    <div class="tc"><div class="tc-h"><div class="tc-icon"></div><div class="tc-n">content_posts</div></div><div class="tc-b">
+      <div class="fr"><span class="fn">id</span><span class="ft">uuid</span><span class="pk">PK</span></div>
+      <div class="fr"><span class="fn">title</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">type</span><span class="ft">TOF|MOF|BOF</span></div>
+      <div class="fr"><span class="fn">status</span><span class="ft">idea→published</span></div>
+      <div class="fr"><span class="fn">script</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">publish_date</span><span class="ft">date</span></div>
+      <div class="fr"><span class="fn">views</span><span class="ft">int</span></div>
+      <div class="fr"><span class="fn">platform</span><span class="ft">instagram|tiktok</span></div>
+    </div></div>
+    <div class="tc"><div class="tc-h"><div class="tc-icon"></div><div class="tc-n">leads</div></div><div class="tc-b">
+      <div class="fr"><span class="fn">id</span><span class="ft">uuid</span><span class="pk">PK</span></div>
+      <div class="fr"><span class="fn">company</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">city</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">email</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">website</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">site_quality</span><span class="ft">outdated|ok|none</span></div>
+      <div class="fr"><span class="fn">status</span><span class="ft">cold→replied</span></div>
+      <div class="fr"><span class="fn">is_premium</span><span class="ft">bool</span></div>
+    </div></div>
+    <div class="tc"><div class="tc-h"><div class="tc-icon"></div><div class="tc-n">finances</div></div><div class="tc-b">
+      <div class="fr"><span class="fn">id</span><span class="ft">uuid</span><span class="pk">PK</span></div>
+      <div class="fr"><span class="fn">type</span><span class="ft">revenue|expense</span></div>
+      <div class="fr"><span class="fn">amount</span><span class="ft">decimal</span></div>
+      <div class="fr"><span class="fn">client_id</span><span class="ft">uuid</span><span class="fk">FK</span></div>
+      <div class="fr"><span class="fn">invoice_status</span><span class="ft">sent|paid|pending</span></div>
+      <div class="fr"><span class="fn">is_recurring</span><span class="ft">bool</span></div>
+      <div class="fr"><span class="fn">date</span><span class="ft">date</span></div>
+      <div class="fr"><span class="fn">description</span><span class="ft">text</span></div>
+    </div></div>
+    <div class="tc"><div class="tc-h"><div class="tc-icon"></div><div class="tc-n">team_members</div></div><div class="tc-b">
+      <div class="fr"><span class="fn">id</span><span class="ft">uuid</span><span class="pk">PK</span></div>
+      <div class="fr"><span class="fn">clerk_user_id</span><span class="ft">text</span><span class="fk">Clerk</span></div>
+      <div class="fr"><span class="fn">name</span><span class="ft">text</span></div>
+      <div class="fr"><span class="fn">role</span><span class="ft">founder|ops|sales</span></div>
+      <div class="fr"><span class="fn">revenue_share</span><span class="ft">decimal (%)</span></div>
+      <div class="fr"><span class="fn">skills</span><span class="ft">text[]</span></div>
+      <div class="fr"><span class="fn">active</span><span class="ft">bool</span></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- SECTION 07 : INTÉGRATIONS -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-n">07</div><div class="sec-t">Intégrations Externes — Lecture d'abord</div><div class="sec-l"></div></div>
+  <div class="int-row">
+    <div class="ic"><div class="ic-ico">🗄️</div><div class="ic-n">Supabase</div><div class="ic-r">DB + Storage + Realtime + RLS</div></div>
+    <div class="ic"><div class="ic-ico">🔐</div><div class="ic-n">Clerk</div><div class="ic-r">Auth + RBAC roles + orgs</div></div>
+    <div class="ic"><div class="ic-ico">📨</div><div class="ic-n">Brevo</div><div class="ic-r">Stats campagnes cold email</div></div>
+    <div class="ic"><div class="ic-ico">✅</div><div class="ic-n">Todoist</div><div class="ic-r">Sync tâches Xavier (REST API)</div></div>
+    <div class="ic"><div class="ic-ico">📱</div><div class="ic-n">Metricool</div><div class="ic-r">Stats Instagram Reels</div></div>
+  </div>
+  <div class="note ny"><strong style="color:#fde047">Stratégie intégrations :</strong> Toutes en lecture-only Phase 1-3. Les actions write (envoyer email Brevo depuis l'OS, publier post depuis l'OS) viennent en Phase 4 seulement après que les lectures soient validées. Google Sheets Xavier → import CSV manuel en Phase 2, API auto en Phase 4.</div>
+</div>
+
+<!-- SECTION 08 : PHASES -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-n">08</div><div class="sec-t">Plan Dev — 5 Phases sur 10 Semaines</div><div class="sec-l"></div></div>
+  <div class="note nb"><strong style="color:#93c5fd">Ordre de développement optimisé :</strong> Commence par installer les agents Claude Code du repo AVANT de coder — ils vont accélérer chaque phase. L'agent Frontend Developer code l'UI, le Backend Architect conçoit les API routes, le Rapid Prototyper valide les flux avant le polish.</div>
+  <div class="phases">
+    <div class="phase">
+      <div class="ph-left"><div class="ph-badge" style="color:var(--red)">Phase 1</div><div class="ph-weeks">Sem 1–2</div></div>
+      <div class="ph-mid">
+        <div class="ph-title">Foundation — Setup + Auth + Layout + Agents</div>
+        <div class="ph-items">
+          <span class="phi agent">Install agency-agents</span>
+          <span class="phi">Next.js 16 + TypeScript 5</span>
+          <span class="phi">Tailwind v4 setup</span>
+          <span class="phi">Clerk Auth + RBAC</span>
+          <span class="phi">Sidebar collapsible</span>
+          <span class="phi">Dark/Light toggle</span>
+          <span class="phi">Supabase schema + RLS</span>
+          <span class="phi">Command Palette Cmd+K</span>
+        </div>
+      </div>
+      <div class="ph-right"><div class="ph-eff" style="color:var(--red)">2</div><div class="ph-effl">semaines</div></div>
+    </div>
+    <div class="phase">
+      <div class="ph-left"><div class="ph-badge" style="color:var(--yellow)">Phase 2</div><div class="ph-weeks">Sem 3–4</div></div>
+      <div class="ph-mid">
+        <div class="ph-title">Contenu + CRM + Livrables (modules critiques)</div>
+        <div class="ph-items">
+          <span class="phi agent">Instagram Curator actif</span>
+          <span class="phi agent">Content Creator actif</span>
+          <span class="phi">Module Contenu complet</span>
+          <span class="phi">Calendrier éditorial</span>
+          <span class="phi">CRM clients CRUD</span>
+          <span class="phi">Suivi livrables</span>
+          <span class="phi">Claude générateur scripts</span>
+        </div>
+      </div>
+      <div class="ph-right"><div class="ph-eff" style="color:var(--yellow)">2</div><div class="ph-effl">semaines</div></div>
+    </div>
+    <div class="phase">
+      <div class="ph-left"><div class="ph-badge" style="color:var(--green)">Phase 3</div><div class="ph-weeks">Sem 5–6</div></div>
+      <div class="ph-mid">
+        <div class="ph-title">Pipeline + Finances + Prospection (revenue engine)</div>
+        <div class="ph-items">
+          <span class="phi agent">Outbound Strategist actif</span>
+          <span class="phi agent">Deal Strategist actif</span>
+          <span class="phi">Pipeline Kanban 7 cols</span>
+          <span class="phi">Module finances + MRR</span>
+          <span class="phi">Table leads import CSV</span>
+          <span class="phi">Claude email froid gen</span>
+          <span class="phi">KPIs Brevo (manuel)</span>
+        </div>
+      </div>
+      <div class="ph-right"><div class="ph-eff" style="color:var(--green)">2</div><div class="ph-effl">semaines</div></div>
+    </div>
+    <div class="phase">
+      <div class="ph-left"><div class="ph-badge" style="color:var(--blue)">Phase 4</div><div class="ph-weeks">Sem 7–8</div></div>
+      <div class="ph-mid">
+        <div class="ph-title">Team + Intégrations API + Dashboard KPIs</div>
+        <div class="ph-items">
+          <span class="phi agent">Analytics Reporter actif</span>
+          <span class="phi agent">Studio Producer actif</span>
+          <span class="phi">Module équipe Xavier</span>
+          <span class="phi">Dashboard KPIs complet</span>
+          <span class="phi">Todoist API sync</span>
+          <span class="phi">Brevo API stats auto</span>
+          <span class="phi">Daily briefing Claude</span>
+          <span class="phi">Metricool sync</span>
+        </div>
+      </div>
+      <div class="ph-right"><div class="ph-eff" style="color:var(--blue)">2</div><div class="ph-effl">semaines</div></div>
+    </div>
+    <div class="phase">
+      <div class="ph-left"><div class="ph-badge" style="color:var(--purple)">Phase 5</div><div class="ph-weeks">Sem 9–10</div></div>
+      <div class="ph-mid">
+        <div class="ph-title">Polish + Hub IA + Mobile + Deploy Production</div>
+        <div class="ph-items">
+          <span class="phi agent">Agents Orchestrator actif</span>
+          <span class="phi agent">Reality Checker QA</span>
+          <span class="phi">Hub Claude /os/ai</span>
+          <span class="phi">Rapport client PDF</span>
+          <span class="phi">Responsive mobile</span>
+          <span class="phi">Error boundaries</span>
+          <span class="phi">Supabase Realtime notifs</span>
+          <span class="phi">Vercel deploy production</span>
+        </div>
+      </div>
+      <div class="ph-right"><div class="ph-eff" style="color:var(--purple)">2</div><div class="ph-effl">semaines</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="ftr">
+  <div class="ftr-brand">Uprising<span>.</span>Studio</div>
+  <div class="ftr-note">Agency OS Blueprint v2.0 · Mai 2026 · Next.js 16 + shadcn/ui + Supabase + Clerk + Claude API + agency-agents (86.9k★)</div>
+</div>
+
+</div>
+</body>
+</html>

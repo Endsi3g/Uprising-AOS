@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+uprising-aos/.next/
+uprising-aos/out/
+uprising-aos/.vercel/
+
+# Env files
+.env
+.env.local
+.env.*.local
+uprising-aos/.env
+uprising-aos/.env.local
+uprising-aos/.env.*.local
+
+# Misc
+.DS_Store
+*.pem
+Thumbs.db
+
+# Vercel
+.vercel
