@@ -1,9 +1,18 @@
+import { createClient } from '@/lib/supabase/server'
+import { InvoicesClient } from './invoices-client'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
-export default function InvoicesPage() {
+export default async function InvoicesPage() {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('finances')
+    .select('*, clients(name)')
+    .eq('type', 'revenue')
+    .order('date', { ascending: false })
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -12,17 +21,10 @@ export default function InvoicesPage() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold">Factures</h1>
-          <p className="text-muted-foreground text-sm">Gestion des factures et paiements</p>
+          <p className="text-muted-foreground text-sm">Suivi et export des factures clients</p>
         </div>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm">Coming soon</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Module factures — intégration Supabase à venir.</p>
-        </CardContent>
-      </Card>
+      <InvoicesClient invoices={data || []} />
     </div>
   )
 }

@@ -9,34 +9,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton'
 import { useState } from 'react'
 import { Bot, Loader2, Wand2 } from 'lucide-react'
+import { useCompletion } from '@ai-sdk/react'
 
 export default function NewContentPage() {
-  const [loading, setLoading] = useState(false)
-  const [generatedContent, setGeneratedContent] = useState('')
   const [topic, setTopic] = useState('')
   const [type, setType] = useState<'TOF' | 'MOF' | 'BOF'>('TOF')
   const [platform, setPlatform] = useState<'instagram' | 'tiktok'>('instagram')
 
+  const { completion, complete, isLoading } = useCompletion({
+    api: '/api/claude',
+  })
+
   const handleGenerate = async () => {
     if (!topic) return
-    setLoading(true)
-    try {
-      const response = await fetch('/api/claude', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'hook',
-          topic,
-          contentType: type,
-        }),
-      })
-      const data = await response.json()
-      setGeneratedContent(data.content || '')
-    } catch (error) {
-      console.error('Erreur génération:', error)
-    } finally {
-      setLoading(false)
-    }
+    await complete('', {
+      body: {
+        type: 'hook',
+        topic,
+        contentType: type,
+      }
+    })
   }
 
   return (
@@ -88,12 +80,12 @@ export default function NewContentPage() {
           <CardTitle className="text-sm">Générateur Claude — Instagram Curator</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button onClick={handleGenerate} disabled={loading || !topic} className="gap-2">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+          <Button onClick={handleGenerate} disabled={isLoading || !topic} className="gap-2">
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
             Générer hooks & script
           </Button>
 
-          {loading && (
+          {isLoading && !completion && (
             <div className="space-y-2">
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-3/4" />
@@ -101,9 +93,9 @@ export default function NewContentPage() {
             </div>
           )}
 
-          {generatedContent && (
+          {completion && (
             <div className="rounded-md border bg-muted/30 p-4">
-              <pre className="text-sm whitespace-pre-wrap font-mono">{generatedContent}</pre>
+              <pre className="text-sm whitespace-pre-wrap font-mono">{completion}</pre>
             </div>
           )}
         </CardContent>

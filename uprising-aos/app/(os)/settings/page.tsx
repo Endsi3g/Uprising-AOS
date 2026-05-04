@@ -28,6 +28,7 @@ export default function SettingsPage() {
           <TabsTrigger value="profile">Profil</TabsTrigger>
           <TabsTrigger value="integrations">Intégrations</TabsTrigger>
           <TabsTrigger value="preferences">Préférences</TabsTrigger>
+          <TabsTrigger value="data">Données</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="mt-4 space-y-4">
@@ -103,6 +104,29 @@ export default function SettingsPage() {
                   <p className="text-xs text-muted-foreground">Génère le briefing au chargement du dashboard</p>
                 </div>
                 <Switch defaultChecked />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="data" className="mt-4">
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm">Données & Sauvegardes</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">Export complet de la base</p>
+                  <p className="text-xs text-muted-foreground">Télécharger les clients, deals, livrables et checkins au format JSON.</p>
+                </div>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => window.open('/api/settings/export', '_blank')}
+                >
+                  Exporter en JSON
+                </Button>
               </div>
             </CardContent>
           </Card>

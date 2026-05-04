@@ -10,16 +10,16 @@
 
 | Module | Route | Statut |
 |--------|-------|--------|
-| Dashboard KPIs | `/os` | En cours |
-| Contenu & Calendrier | `/os/content` | En cours |
-| CRM Clients | `/os/clients` | En cours |
-| Pipeline de Vente | `/os/pipeline` | En cours |
-| Suivi Livrables | `/os/deliverables` | En cours |
-| Prospection & Leads | `/os/prospection` | En cours |
-| Finances & Revenus | `/os/finances` | En cours |
-| Équipe | `/os/team` | En cours |
-| Hub IA Claude | `/os/ai` | En cours |
-| Paramètres | `/os/settings` | En cours |
+| Dashboard KPIs | `/os` | Terminé |
+| Contenu & Calendrier | `/os/content` | Terminé |
+| CRM Clients | `/os/clients` | Terminé |
+| Pipeline de Vente | `/os/pipeline` | Terminé |
+| Suivi Livrables | `/os/deliverables` | Terminé |
+| Prospection & Leads | `/os/prospection` | Terminé |
+| Finances & Revenus | `/os/finances` | Terminé |
+| Équipe | `/os/team` | Terminé |
+| Hub IA Claude | `/os/ai` | Terminé |
+| Paramètres | `/os/settings` | Terminé |
 
 ---
 

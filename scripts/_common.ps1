@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 # _common.ps1 — Shared functions & dependency installer
 # Dot-source this file in every script: . "$PSScriptRoot\_common.ps1"
 # ============================================================
@@ -185,7 +185,8 @@ function Assert-EnvVars {
     }
 
     if ($missing -gt 0) {
-        Write-Fail "$missing required env var(s) not set. Edit uprising-aos\.env.local"
+        Write-Fail "$missing required env var(s) not set. Please check your env file."
         exit 1
     }
 }
+

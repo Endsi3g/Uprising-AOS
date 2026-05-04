@@ -3,6 +3,11 @@
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -17,6 +22,7 @@ import {
   ChevronRight,
   DollarSign,
   LayoutDashboard,
+  Menu,
   Settings,
   Target,
   Users,
@@ -26,6 +32,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { WorkspaceSwitcher } from './workspace-switcher'
 
 const NAV_ITEMS = [
   { href: '/os', label: 'Dashboard', icon: LayoutDashboard },
@@ -39,6 +46,72 @@ const NAV_ITEMS = [
   { href: '/os/ai', label: 'Hub IA', icon: Bot },
 ]
 
+function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const pathname = usePathname()
+  return (
+    <>
+      {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        const isActive = pathname === href || (href !== '/os' && pathname.startsWith(href))
+        return (
+          <Link
+            key={href}
+            href={href}
+            onClick={onNavigate}
+            className={cn(
+              'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors',
+              isActive
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+            )}
+          >
+            <Icon className="h-4 w-4 flex-shrink-0" />
+            <span>{label}</span>
+          </Link>
+        )
+      })}
+    </>
+  )
+}
+
+// Mobile hamburger + Sheet drawer
+export function MobileSidebar() {
+  const [open, setOpen] = useState(false)
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger render={<Button variant="ghost" size="icon" className="md:hidden" />}>
+        <Menu className="h-5 w-5" />
+        <span className="sr-only">Menu</span>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-64 p-0 flex flex-col">
+        <div className="flex items-center gap-2 px-4 py-4 border-b">
+          <div className="w-7 h-7 bg-primary rounded-sm flex items-center justify-center flex-shrink-0">
+            <span className="text-primary-foreground text-xs font-bold">U</span>
+          </div>
+          <div>
+            <p className="text-sm font-bold leading-none">Uprising</p>
+            <p className="text-xs text-muted-foreground">Agency OS</p>
+          </div>
+        </div>
+        <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
+          <NavLinks onNavigate={() => setOpen(false)} />
+        </nav>
+        <Separator />
+        <div className="p-2">
+          <Link
+            href="/os/settings"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          >
+            <Settings className="h-4 w-4" />
+            <span>Paramètres</span>
+          </Link>
+        </div>
+      </SheetContent>
+    </Sheet>
+  )
+}
+
+// Desktop collapsible sidebar
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
@@ -47,21 +120,24 @@ export function Sidebar() {
     <TooltipProvider delay={0}>
       <aside
         className={cn(
-          'relative flex flex-col border-r bg-sidebar h-screen transition-all duration-200',
+          'relative hidden md:flex flex-col border-r bg-sidebar h-screen transition-all duration-200',
           collapsed ? 'w-14' : 'w-56'
         )}
       >
         {/* Brand */}
-        <div className={cn('flex items-center gap-2 px-3 py-4 border-b', collapsed && 'justify-center px-0')}>
-          <div className="w-7 h-7 bg-primary rounded-sm flex items-center justify-center flex-shrink-0">
-            <span className="text-primary-foreground text-xs font-bold">U</span>
-          </div>
-          {!collapsed && (
-            <div>
-              <p className="text-sm font-bold leading-none">Uprising</p>
-              <p className="text-xs text-muted-foreground">Agency OS</p>
+        <div className={cn('flex flex-col gap-4 px-3 py-4 border-b', collapsed && 'justify-center items-center px-0')}>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 bg-primary rounded-sm flex items-center justify-center flex-shrink-0">
+              <span className="text-primary-foreground text-xs font-bold">U</span>
             </div>
-          )}
+            {!collapsed && (
+              <div>
+                <p className="text-sm font-bold leading-none">Uprising</p>
+                <p className="text-xs text-muted-foreground">Agency OS</p>
+              </div>
+            )}
+          </div>
+          {!collapsed && <WorkspaceSwitcher />}
         </div>
 
         {/* Nav */}

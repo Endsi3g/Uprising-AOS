@@ -39,7 +39,7 @@
 
 ---
 
-## Phase 2 — Modules Critiques `[ Semaines 3–4 ]`
+## Phase 2 — Modules Critiques
 
 ### 2.1 Module Contenu (`/os/content`)
 
@@ -143,50 +143,50 @@
 
 ### 5.1 Qualité & Performance
 
-- [ ] Tous les TypeScript errors résolus : `pnpm tsc --noEmit`
-- [ ] Lint clean : `pnpm lint`
-- [ ] Build production OK : `pnpm build`
-- [ ] Suspense boundaries + Skeleton sur tous les fetches
-- [ ] Error boundaries (`error.tsx`) sur chaque module
-- [ ] Loading states (`loading.tsx`) sur chaque route
-- [ ] Metadata SEO sur chaque page (`export const metadata`)
+- [x] Tous les TypeScript errors résolus : `pnpm tsc --noEmit`
+- [x] Lint clean : `pnpm lint`
+- [x] Build production OK : `pnpm build`
+- [x] Suspense boundaries + Skeleton sur tous les fetches
+- [x] Error boundaries (`error.tsx`) sur chaque module
+- [x] Loading states (`loading.tsx`) sur chaque route
+- [x] Metadata SEO sur chaque page (`export const metadata`)
 
 ### 5.2 Responsive & UX
 
-- [ ] Sidebar collapse sur mobile (Sheet/Drawer)
-- [ ] DataTables scrollable sur mobile
-- [ ] Kanban scrollable horizontalement sur mobile
-- [ ] Dark/Light toggle fonctionnel (next-themes)
-  - [ ] Ajouter `ThemeProvider` dans `app/layout.tsx`
-  - [ ] Switch dans Settings connecté
+- [x] Sidebar collapse sur mobile (Sheet/Drawer)
+- [x] DataTables scrollable sur mobile
+- [x] Kanban scrollable horizontalement sur mobile
+- [x] Dark/Light toggle fonctionnel (next-themes)
+  - [x] Ajouter `ThemeProvider` dans `app/layout.tsx`
+  - [x] Switch dans Settings connecté
 
 ### 5.3 Sécurité
 
-- [ ] RLS Policies Supabase vérifiées pour chaque table
-- [ ] Variables d'env côté server uniquement (pas de `NEXT_PUBLIC_` pour les secrets)
-- [ ] Rate limiting sur `/api/claude` (ex: 10 req/min)
-  - [ ] Utiliser Upstash Redis ou simple in-memory Map
-- [ ] Validation Zod sur tous les POST handlers
+- [x] RLS Policies Supabase vérifiées pour chaque table
+- [x] Variables d'env côté server uniquement (pas de `NEXT_PUBLIC_` pour les secrets)
+- [x] Rate limiting sur `/api/claude` (ex: 10 req/min)
+  - [x] Utiliser Upstash Redis ou simple in-memory Map
+- [x] Validation Zod sur tous les POST handlers
 
 ### 5.4 Deploy Vercel
-
-- [ ] Repo GitHub connecté à Vercel (auto-deploy sur push main)
-- [ ] Variables d'env configurées dans Vercel dashboard
-- [ ] Domain custom configuré (si applicable)
-- [ ] `./scripts/release.sh minor` pour couper la v0.1.0
-- [ ] `./scripts/deploy.sh --prod` pour le premier deploy prod
+- [x] Repo GitHub connecté à Vercel (auto-deploy sur push main)
+- [x] Variables d'env configurées dans Vercel dashboard
+- [x] Domain custom configuré (si applicable)
+- [x] `./scripts/release.sh minor` pour couper la v0.1.0
+- [x] `./scripts/deploy.sh --prod` pour le premier deploy prod
 
 ---
 
-## Fonctionnalités Bonus (Post-v1)
+## Fonctionnalités Bonus (Phase 6) — Production Ready `[ Terminé ]`
 
-- [ ] Rapport client PDF — `react-pdf` ou Puppeteer → génération via Claude
-- [ ] Supabase Realtime — notifications live pour livrables et deals
-- [ ] Import/export complet (JSON backup de toute la DB)
-- [ ] Multi-workspace (si l'OS est vendu à d'autres agences)
-- [ ] App mobile PWA — `next-pwa` + manifest
-- [ ] Webhook Brevo → update statut lead automatiquement
-- [ ] Showreel component sur la landing (composant `@arc/showreel` déjà fourni)
+- [x] Rapport client PDF — `@react-pdf/renderer` → génération dynamique
+- [x] Supabase Realtime — notifications live (Sonner) pour livrables et deals
+- [x] Import/export complet (JSON backup de toute la DB dans Settings)
+- [x] Multi-workspace (SaaS) — isolation complète via RLS & WorkspaceSwitcher
+- [x] App mobile PWA — `@ducanh2912/next-pwa` + manifest + assets
+- [x] Webhook Brevo — synchronisation auto des statuts de leads
+- [x] Showreel component — intégration vidéo immersive sur la landing page
+- [x] CI/CD Automation — GitHub Actions + Tests E2E Puppeteer
 
 ---
 

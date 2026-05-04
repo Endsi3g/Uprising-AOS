@@ -19,7 +19,7 @@ CREATE TABLE deliverables (
   progress INT DEFAULT 0 CHECK (progress >= 0 AND progress <= 100),
   assigned_to TEXT NOT NULL,
   deadline DATE NOT NULL,
-  is_late BOOLEAN GENERATED ALWAYS AS (deadline < CURRENT_DATE AND status != 'completed') STORED,
+  is_late BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

@@ -1,32 +1,51 @@
-'use client'
-
+import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { StatCard } from '@/components/shared/stat-card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { DollarSign, TrendingUp, TrendingDown, FileText } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts'
+import { FinancesCharts } from './charts-client'
 
-const REVENUE_DATA = [
-  { month: 'Jan', revenue: 0, goal: 8000 },
-  { month: 'Fév', revenue: 1200, goal: 8000 },
-  { month: 'Mar', revenue: 2500, goal: 8000 },
-  { month: 'Avr', revenue: 3800, goal: 8000 },
-  { month: 'Mai', revenue: 4200, goal: 8000 },
-]
+export default async function FinancesPage() {
+  const supabase = await createClient()
 
-const EXPENSES = [
-  { name: 'Brevo', amount: 49, category: 'Marketing' },
-  { name: 'Vercel', amount: 20, category: 'Infra' },
-  { name: 'Claude API', amount: 35, category: 'IA' },
-  { name: 'Apify', amount: 29, category: 'Scraping' },
-]
+  // All transactions
+  const { data: allFinances } = await supabase
+    .from('finances')
+    .select('*, clients(name)')
+    .order('date', { ascending: false })
 
-export default function FinancesPage() {
-  const totalExpenses = EXPENSES.reduce((a, e) => a + e.amount, 0)
-  const currentRevenue = 4200
+  const finances = (allFinances as unknown as any[]) || []
+
+  // Current month MRR
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+
+  const monthRevenues = finances.filter(f => f.type === 'revenue' && f.date >= startOfMonth)
+  const mrr = monthRevenues.reduce((acc, f) => acc + Number(f.amount), 0)
+
+  const monthExpenses = finances.filter(f => f.type === 'expense' && f.date >= startOfMonth)
+  const expenses = monthExpenses.reduce((acc, f) => acc + Number(f.amount), 0)
+
   const mrrGoal = 8000
+
+  // Build chart data: last 6 months
+  const chartData = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date()
+    d.setMonth(d.getMonth() - (5 - i))
+    const monthStr = d.toISOString().slice(0, 7) // YYYY-MM
+    const monthLabel = d.toLocaleDateString('fr-CA', { month: 'short' })
+
+    const revenue = finances
+      .filter(f => f.type === 'revenue' && f.date.startsWith(monthStr))
+      .reduce((acc, f) => acc + Number(f.amount), 0)
+
+    const exp = finances
+      .filter(f => f.type === 'expense' && f.date.startsWith(monthStr))
+      .reduce((acc, f) => acc + Number(f.amount), 0)
+
+    return { month: monthLabel, revenue, expenses: exp, goal: mrrGoal }
+  })
 
   return (
     <div className="space-y-6">
@@ -41,51 +60,27 @@ export default function FinancesPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <StatCard title="MRR actuel" value={`${currentRevenue.toLocaleString()}$`} icon={DollarSign} trend={{ value: 12, label: 'vs mois dernier' }} />
-        <StatCard title="Objectif MRR" value={`${mrrGoal.toLocaleString()}$`} description={`${Math.round(currentRevenue/mrrGoal*100)}% atteint`} icon={TrendingUp} />
-        <StatCard title="Dépenses / mois" value={`${totalExpenses}$`} description="Outils & services" icon={TrendingDown} />
+        <StatCard
+          title="MRR actuel"
+          value={`${mrr.toLocaleString()}$`}
+          description={`Objectif: ${mrrGoal.toLocaleString()}$`}
+          icon={DollarSign}
+        />
+        <StatCard
+          title="Progression"
+          value={`${Math.round((mrr / mrrGoal) * 100)}%`}
+          description={`${mrr.toLocaleString()}$ / ${mrrGoal.toLocaleString()}$ ce mois`}
+          icon={TrendingUp}
+        />
+        <StatCard
+          title="Dépenses / mois"
+          value={`${expenses.toLocaleString()}$`}
+          description="Outils & services"
+          icon={TrendingDown}
+        />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Revenus vs Objectif</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-48">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={REVENUE_DATA}>
-                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} />
-                  <Area type="monotone" dataKey="goal" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.05} strokeDasharray="4 4" name="Objectif" />
-                  <Area type="monotone" dataKey="revenue" stroke="#22c55e" fill="#22c55e" fillOpacity={0.1} name="Revenus" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Dépenses outils</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {EXPENSES.map(expense => (
-              <div key={expense.name} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">{expense.name}</span>
-                  <Badge variant="outline" className="text-[10px]">{expense.category}</Badge>
-                </div>
-                <span className="text-sm font-medium">{expense.amount}$/mois</span>
-              </div>
-            ))}
-            <div className="pt-2 border-t flex justify-between text-sm font-semibold">
-              <span>Total</span>
-              <span>{totalExpenses}$/mois</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <FinancesCharts chartData={chartData} finances={finances} />
     </div>
   )
 }
