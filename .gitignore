@@ -19,6 +19,8 @@ uprising-aos/.env.*.local
 .DS_Store
 *.pem
 Thumbs.db
+.claude/
+logs/
 
 # Vercel
 .vercel
