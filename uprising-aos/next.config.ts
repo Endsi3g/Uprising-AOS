@@ -8,6 +8,12 @@ const withPWA = withPWAInit({
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Fix for Next.js 16 + Turbopack + PWA
+  experimental: {
+    turbo: {
+      // Configure Turbopack rules if needed, or leave empty to disable the error
+    }
+  }
 };
 
 export default withPWA(nextConfig);
