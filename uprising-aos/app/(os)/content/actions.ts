@@ -12,7 +12,6 @@ export async function updatePostStatus(postId: string, newStatus: string) {
     .eq('id', postId)
 
   if (error) {
-    console.error('Failed to update post status:', error)
     return { success: false, error: error.message }
   }
 

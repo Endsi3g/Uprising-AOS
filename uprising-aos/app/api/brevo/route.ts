@@ -1,6 +1,12 @@
+import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
+  const { userId } = await auth()
+  if (!userId) {
+    return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
+  }
+
   const BREVO_API_KEY = process.env.BREVO_API_KEY
 
   if (!BREVO_API_KEY || BREVO_API_KEY === 'xkeysib-...') {
@@ -42,7 +48,8 @@ export async function GET() {
       campaigns,
       totalContacts: contactsData.count || 0,
     })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Erreur inconnue'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

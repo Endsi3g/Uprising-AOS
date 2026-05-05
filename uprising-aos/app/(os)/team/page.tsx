@@ -22,9 +22,10 @@ export default async function TeamPage() {
   const team = (teamData as unknown as TeamMember[]) || []
 
   // Fetch KPIs for all active members
-  const { data: statsData } = await (supabase as any)
-    .from('member_deliverables_stats')
+  const { data: rawStats } = await supabase
+    .from('member_deliverables_stats' as any)
     .select('*')
+  const statsData = rawStats as Array<{ member_name: string; total_deliverables: number; completed_deliverables: number }> | null
 
   return (
     <div className="space-y-6">
@@ -35,7 +36,7 @@ export default async function TeamPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {team.map(member => {
-          const stats = (statsData || []).find((s: any) => s.member_name === member.name)
+          const stats = (statsData || []).find(s => s.member_name === member.name)
           const completionRate = stats && stats.total_deliverables > 0 
             ? Math.round((stats.completed_deliverables / stats.total_deliverables) * 100) 
             : 0

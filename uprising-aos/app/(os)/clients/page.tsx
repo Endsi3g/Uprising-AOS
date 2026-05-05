@@ -1,3 +1,4 @@
+import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -6,12 +7,6 @@ import type { ColumnDef } from '@tanstack/react-table'
 import type { Client } from '@/types'
 import Link from 'next/link'
 import { Plus, ArrowUpDown } from 'lucide-react'
-
-const MOCK_CLIENTS: Client[] = [
-  { id: '1', name: 'Tremblay Construction', email: 'info@tremblay.ca', type: 'pro_bono', status: 'active', services: ['Site web', 'SEO'], created_at: '2026-01-15' },
-  { id: '2', name: 'Café Lumière', email: 'contact@cafelumiere.ca', type: 'pro_bono', status: 'active', services: ['Instagram', 'Site web'], created_at: '2026-02-01' },
-  { id: '3', name: 'PME Solutions', email: 'pme@solutions.ca', type: 'paid', status: 'active', services: ['Stratégie digitale', 'Contenu'], created_at: '2026-03-10' },
-]
 
 const columns: ColumnDef<Client>[] = [
   {
@@ -68,19 +63,23 @@ const columns: ColumnDef<Client>[] = [
   },
 ]
 
-export default function ClientsPage() {
+export default async function ClientsPage() {
+  const supabase = await createClient()
+  const { data } = await supabase.from('clients').select('*').order('created_at', { ascending: false })
+  const clients = (data as unknown as Client[]) || []
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Clients</h1>
-          <p className="text-muted-foreground text-sm">Gestion CRM — {MOCK_CLIENTS.length} clients</p>
+          <p className="text-muted-foreground text-sm">Gestion CRM — {clients.length} client{clients.length !== 1 ? 's' : ''}</p>
         </div>
         <Button asChild size="sm">
           <Link href="/os/clients/new"><Plus className="h-4 w-4 mr-1" />Nouveau client</Link>
         </Button>
       </div>
-      <DataTable columns={columns} data={MOCK_CLIENTS} searchKey="name" searchPlaceholder="Rechercher un client..." />
+      <DataTable columns={columns} data={clients} searchKey="name" searchPlaceholder="Rechercher un client..." />
     </div>
   )
 }

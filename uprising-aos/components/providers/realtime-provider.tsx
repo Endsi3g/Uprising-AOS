@@ -45,11 +45,7 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
       }
     )
 
-    channel.subscribe((status) => {
-      if (status === 'SUBSCRIBED') {
-        console.log('Realtime global notifications active')
-      }
-    })
+    channel.subscribe()
 
     return () => {
       supabase.removeChannel(channel)

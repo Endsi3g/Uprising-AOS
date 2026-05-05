@@ -1,8 +1,8 @@
-export async function fetchTodoistTasks() {
+export async function fetchTodoistTasks(): Promise<{ id: string; content: string; description: string; isCompleted: boolean; due: string | null; priority: number }[] | null> {
   const TODOIST_API_KEY = process.env.TODOIST_API_KEY
 
   if (!TODOIST_API_KEY) {
-    return []
+    return null
   }
 
   try {
@@ -10,13 +10,11 @@ export async function fetchTodoistTasks() {
       headers: {
         'Authorization': `Bearer ${TODOIST_API_KEY}`
       },
-      // Revalidate frequently or don't cache
       next: { revalidate: 60 }
     })
 
     if (!res.ok) {
-      console.error('Todoist API error:', res.statusText)
-      return []
+      return null
     }
 
     const tasks = await res.json()
@@ -28,8 +26,7 @@ export async function fetchTodoistTasks() {
       due: t.due ? t.due.date : null,
       priority: t.priority
     }))
-  } catch (error) {
-    console.error('Failed to fetch Todoist tasks:', error)
-    return []
+  } catch {
+    return null
   }
 }

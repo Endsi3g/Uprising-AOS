@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useState } from 'react'
 import { Bot, Loader2, Wand2, Copy } from 'lucide-react'
+import { toast } from 'sonner'
 
 const AI_TOOLS = [
   { id: 'hook', label: 'Hooks Instagram', description: 'Générer des hooks viraux pour vos Reels', agent: 'Instagram Curator' },
@@ -36,10 +37,15 @@ export default function AIHubPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: activeTab, prompt }),
       })
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}))
+        toast.error(err.error || 'Erreur lors de la génération')
+        return
+      }
       const data = await response.json()
       setResult(data.content || '')
-    } catch (e) {
-      console.error(e)
+    } catch {
+      toast.error('Impossible de contacter l\'API Claude')
     } finally {
       setLoading(false)
     }

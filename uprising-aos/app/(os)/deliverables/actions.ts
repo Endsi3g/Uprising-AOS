@@ -8,14 +8,13 @@ export async function toggleDeliverableStatus(id: string, isCompleted: boolean) 
 
   const { error } = await (supabase as any)
     .from('deliverables')
-    .update({ 
+    .update({
       status: isCompleted ? 'completed' : 'in_progress',
       progress: isCompleted ? 100 : 50
     })
     .eq('id', id)
 
   if (error) {
-    console.error('Failed to update deliverable:', error)
     return { success: false, error: error.message }
   }
 
@@ -23,7 +22,7 @@ export async function toggleDeliverableStatus(id: string, isCompleted: boolean) 
   return { success: true }
 }
 
-export async function addComment(deliverableId: string, userId: string, userName: string, content: string) {
+export async function addComment(deliverableId: string, userId: string, _userName: string, content: string) {
   const supabase = await createClient()
 
   const { error } = await (supabase as any)
@@ -31,7 +30,6 @@ export async function addComment(deliverableId: string, userId: string, userName
     .insert([{ deliverable_id: deliverableId, user_id: userId, content }])
 
   if (error) {
-    console.error('Failed to add comment:', error)
     return { success: false, error: error.message }
   }
 

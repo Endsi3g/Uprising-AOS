@@ -1,3 +1,4 @@
+import { auth } from '@clerk/nextjs/server'
 import { anthropic } from '@ai-sdk/anthropic'
 import { streamText } from 'ai'
 import { NextResponse } from 'next/server'
@@ -22,6 +23,11 @@ const ClaudeRequestSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth()
+    if (!userId) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
+    }
+
     // Rate limiting: 10 requests per minute per IP
     const headersList = await headers()
     const ip = headersList.get('x-forwarded-for') ?? headersList.get('x-real-ip') ?? 'anonymous'
@@ -81,14 +87,15 @@ Format: bullet points. Ton: direct, factuel, orienté action.
     }
 
     const result = streamText({
-      model: anthropic('claude-3-5-sonnet-latest'),
+      model: anthropic('claude-sonnet-4-6'),
       system: systemPrompt,
       messages: [{ role: 'user', content: userMessage }],
     })
 
     return result.toTextStreamResponse()
-  } catch (error: any) {
+  } catch (error) {
     console.error('Claude API Error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    const message = error instanceof Error ? error.message : 'Erreur inconnue'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

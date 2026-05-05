@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { DollarSign, TrendingUp, TrendingDown, FileText } from 'lucide-react'
 import { FinancesCharts } from './charts-client'
+import { MRR_GOAL_DEFAULT } from '@/lib/config'
 
 export default async function FinancesPage() {
   const supabase = await createClient()
@@ -27,7 +28,7 @@ export default async function FinancesPage() {
   const monthExpenses = finances.filter(f => f.type === 'expense' && f.date >= startOfMonth)
   const expenses = monthExpenses.reduce((acc, f) => acc + Number(f.amount), 0)
 
-  const mrrGoal = 8000
+  const mrrGoal = MRR_GOAL_DEFAULT
 
   // Build chart data: last 6 months
   const chartData = Array.from({ length: 6 }, (_, i) => {

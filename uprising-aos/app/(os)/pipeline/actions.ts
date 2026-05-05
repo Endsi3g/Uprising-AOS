@@ -8,14 +8,13 @@ export async function updateDealStage(dealId: string, newStage: string) {
 
   const { error } = await (supabase as any)
     .from('deals')
-    .update({ 
+    .update({
       stage: newStage,
       updated_at: new Date().toISOString()
     })
     .eq('id', dealId)
 
   if (error) {
-    console.error('Failed to update deal stage:', error)
     return { success: false, error: error.message }
   }
 
@@ -28,9 +27,7 @@ export async function saveDeal(dealData: any, isNew: boolean = true) {
 
   let result
   if (isNew) {
-    result = await (supabase as any)
-      .from('deals')
-      .insert([dealData])
+    result = await (supabase as any).from('deals').insert([dealData])
   } else {
     result = await (supabase as any)
       .from('deals')
@@ -39,7 +36,6 @@ export async function saveDeal(dealData: any, isNew: boolean = true) {
   }
 
   if (result.error) {
-    console.error('Failed to save deal:', result.error)
     return { success: false, error: result.error.message }
   }
 

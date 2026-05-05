@@ -7,7 +7,7 @@ export function Showreel({ src, poster }: { src: string; poster?: string }) {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.play().catch(e => console.log('Autoplay prevented:', e))
+      videoRef.current.play().catch(() => { /* autoplay prevented by browser policy */ })
     }
   }, [])
 

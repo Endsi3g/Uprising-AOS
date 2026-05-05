@@ -14,36 +14,37 @@ const brevoWebhookSchema = z.object({
 }).passthrough()
 
 export async function POST(req: Request) {
+  const secret = process.env.BREVO_WEBHOOK_SECRET
+  if (secret) {
+    const token = req.headers.get('x-brevo-signature') ?? new URL(req.url).searchParams.get('secret')
+    if (token !== secret) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+  }
+
   try {
     const payload = await req.json()
-    
-    // Check if it's an array of events (batching) or single event
     const events = Array.isArray(payload) ? payload : [payload]
-    
     const supabase = await createClient()
     let updatedCount = 0
 
     for (const rawEvent of events) {
       const parsed = brevoWebhookSchema.safeParse(rawEvent)
-      if (!parsed.success) {
-        console.error('Invalid webhook payload:', parsed.error)
-        continue
-      }
-      
+      if (!parsed.success) continue
+
       const event = parsed.data
       let newStatus = ''
-      
-      // Map Brevo events to Lead statuses
+
       if (event.event === 'opened') newStatus = 'contacted'
       else if (event.event === 'click') newStatus = 'contacted'
       else if (event.event === 'reply') newStatus = 'replied'
-      
+
       if (newStatus) {
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from('leads')
-          .update({ status: newStatus } as any)
+          .update({ status: newStatus })
           .eq('email', event.email)
-          
+
         if (!error) updatedCount++
       }
     }

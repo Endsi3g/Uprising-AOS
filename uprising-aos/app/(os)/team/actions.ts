@@ -11,7 +11,6 @@ export async function addTeamCheckin(memberId: string, content: string) {
     .insert([{ team_member_id: memberId, content }])
 
   if (error) {
-    console.error('Failed to add check-in:', error)
     return { success: false, error: error.message }
   }
 

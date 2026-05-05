@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { useCommandPalette } from '@/hooks/use-command-palette'
-import { Search, Bell, Moon, Sun, Settings, LogOut, User, Shield, Zap, ChevronRight } from 'lucide-react'
+import { Search, Moon, Sun, Settings, LogOut, User, Shield, Zap } from 'lucide-react'
 import { UserButton, useClerk } from '@clerk/nextjs'
 import { MobileSidebar } from '@/components/layout/sidebar'
 import { useTheme } from 'next-themes'
@@ -59,11 +59,6 @@ export function Topbar({ title }: { title?: string }) {
                 <span>Apparence</span>
               </DropdownMenuPageTrigger>
 
-              <DropdownMenuPageTrigger targetId="notifications">
-                <Bell className="w-4 h-4 mr-2 opacity-70" />
-                <span>Notifications</span>
-              </DropdownMenuPageTrigger>
-
               <DropdownMenuSeparator />
               
               <DropdownMenuItem onSelect={() => (window.location.href = '/os/settings')}>
@@ -100,23 +95,11 @@ export function Topbar({ title }: { title?: string }) {
               </DropdownMenuItem>
             </DropdownMenuPage>
 
-            {/* Notifications Submenu */}
-            <DropdownMenuPage id="notifications">
-              <DropdownMenuItem>
-                <span>Toutes les notifications</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>Seulement les mentions</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>Muet</span>
-              </DropdownMenuItem>
-            </DropdownMenuPage>
           </DropdownMenuContent>
         </DropdownMenu>
 
         <div className="flex items-center ml-1">
-          <UserButton afterSignOutUrl="/" />
+          <UserButton />
         </div>
       </div>
     </header>
